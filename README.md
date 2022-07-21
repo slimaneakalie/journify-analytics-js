@@ -1,0 +1,1 @@
+# journify-analytics-js-sdk

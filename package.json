@@ -1,0 +1,13 @@
+{
+  "name": "journify-analytics-js",
+  "version": "1.0.0",
+  "description": "Journify analytics SDK for JavaScript",
+  "main": "index.js",
+  "repository": "git@github.com:slimaneakalie/journify-analytics-js.git",
+  "author": "Slimane Akalië",
+  "license": "MIT",
+  "dependencies": {
+    "@types/js-cookie": "^3.0.2",
+    "js-cookie": "^3.0.1"
+  }
+}

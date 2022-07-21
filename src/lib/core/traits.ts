@@ -7,4 +7,4 @@ export type JSONPrimitive = string | number | boolean | null;
 export type JSONObject = { [member: string]: JSONValue };
 export type JSONArray = Array<JSONValue>;
 
-export const TRAITS_PERSISTENCE_KEY_PREFIX = 'journify_user_traits_';
+export const USER_TRAITS_PERSISTENCE_KEY = 'journifyio_user_traits';

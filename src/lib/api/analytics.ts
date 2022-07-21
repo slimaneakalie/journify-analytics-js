@@ -13,9 +13,8 @@ export class Analytics extends Emitter {
 
   async identify(
     userId: string,
-    traits?: Traits,
-    callback?: Callback
-  ): Promise<DispatchedEvent> {
+    traits?: Traits
+  ): Promise<Context> {
     this.user.identify(userId, traits);
     const segmentEvent = this.eventFactory.identify(
       this._user.id(),
@@ -39,5 +38,3 @@ export class Analytics extends Emitter {
 export interface AnalyticsSettings {
   writeKey: string;
 }
-
-export type Callback = (ctx: Context | undefined) => Promise<unknown> | unknown;

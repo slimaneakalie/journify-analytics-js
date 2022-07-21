@@ -1,12 +1,17 @@
+import { v4 as uuid } from '@lukeed/uuid'
+
 import { LocalStorage } from "./localStorage";
 import { NullStorage } from "./nullStorage";
 import { Store } from "./store";
 import { Traits, USER_TRAITS_PERSISTENCE_KEY } from "./traits";
 
+const ANONYMOUS_ID_PERSISTENCE_KEY = "journifyio_annonymous_id";
+
 export class User {
   private traits: Traits;
   private localStorage: Store;
   private memoryStorage: Store;
+  private anonymousId: string;
 
   constructor() {
     this.localStorage = LocalStorage.isAvailable()
@@ -14,6 +19,8 @@ export class User {
       : new NullStorage();
     this.memoryStorage = new Store();
     this.traits = this.getFromStores(USER_TRAITS_PERSISTENCE_KEY) ?? {};
+    this.anonymousId =
+      this.getFromStores(ANONYMOUS_ID_PERSISTENCE_KEY) ?? uuid();
   }
 
   identify(id?: string, traits: Traits = {}) {

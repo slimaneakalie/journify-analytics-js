@@ -1,7 +1,7 @@
-import { Context } from "../core/context";
-import { Emitter } from "../core/emitter";
-import { Traits } from "../core/traits";
-import { User } from "../core/user";
+import { Context } from "../core/transport/context";
+import { Emitter } from "../core/transport/emitter";
+import { Traits } from "../core/domain/traits";
+import { User } from "../core/domain/user";
 
 export class Analytics extends Emitter {
   private user: User;

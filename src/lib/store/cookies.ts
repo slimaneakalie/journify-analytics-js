@@ -1,29 +1,29 @@
-import Cookie from "js-cookie";
+import JsCookie from "js-cookie";
 
-import { Store } from "./store";
 import { getUrlLevels, parseUrl } from "./utils";
+import { Store } from "./store";
 
 const ONE_YEAR = 365;
 
-export class CookieStorage extends Store {
-  private attributes: Cookie.CookieAttributes;
+export class Cookies implements Store {
+  private attributes: JsCookie.CookieAttributes;
 
-  static isAvailable(): boolean {
+  public static isAvailable(): boolean {
     let cookieEnabled = window.navigator.cookieEnabled;
 
     if (!cookieEnabled) {
       const testKey = "journify.io-test-cookie-key";
-      Cookie.set(testKey, "journify.io-test-cookie-value");
+      JsCookie.set(testKey, "journify.io-test-cookie-value");
       cookieEnabled = document.cookie.includes(testKey);
-      Cookie.remove(testKey);
+      JsCookie.remove(testKey);
     }
 
     return cookieEnabled;
   }
 
-  get<T>(key: string): T | null {
+  public get<T>(key: string): T | null {
     try {
-      const value = Cookie.get(key);
+      const value = JsCookie.get(key);
 
       if (!value) {
         return null;
@@ -39,27 +39,27 @@ export class CookieStorage extends Store {
     }
   }
 
-  set<T>(key: string, value: T): T | null {
+  public set<T>(key: string, value: T): T | null {
     if (typeof value === "string") {
-      Cookie.set(key, value, this.getAttributes());
+      JsCookie.set(key, value, this.getAttributes());
     } else if (value === null) {
-      Cookie.remove(key, this.getAttributes());
+      JsCookie.remove(key, this.getAttributes());
     } else {
-      Cookie.set(key, JSON.stringify(value), this.getAttributes());
+      JsCookie.set(key, JSON.stringify(value), this.getAttributes());
     }
     return value;
   }
 
-  remove(key: string): void {
-    return Cookie.remove(key, this.getAttributes());
+  public remove(key: string): void {
+    return JsCookie.remove(key, this.getAttributes());
   }
 
-  private getAttributes(): Cookie.CookieAttributes{
+  private getAttributes(): JsCookie.CookieAttributes {
     if (!this.attributes) {
-      this.setAttributes()
+      this.setAttributes();
     }
 
-    return this.attributes
+    return this.attributes;
   }
 
   private setAttributes() {
@@ -84,9 +84,9 @@ export class CookieStorage extends Store {
 
       try {
         // cookie access throw an error if the library is ran inside a sandboxed environment (e.g. sandboxed iframe)
-        Cookie.set(cname, "1", opts);
-        if (Cookie.get(cname)) {
-          Cookie.remove(cname, opts);
+        JsCookie.set(cname, "1", opts);
+        if (JsCookie.get(cname)) {
+          JsCookie.remove(cname, opts);
           return domain;
         }
       } catch (_) {

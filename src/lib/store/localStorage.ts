@@ -1,7 +1,7 @@
 import { Store } from "./store";
 
-export class LocalStorage extends Store {
-  static isAvailable(): boolean {
+export class LocalStorage implements Store {
+  public static isAvailable(): boolean {
     const testKey = "journify.io-test-localstorage-key";
     try {
       localStorage.setItem(testKey, "journify.io-test-localstorage-value");
@@ -12,7 +12,7 @@ export class LocalStorage extends Store {
     }
   }
 
-  get<T>(key: string): T | null {
+  public get<T>(key: string): T | null {
     const val = localStorage.getItem(key);
     if (val) {
       try {
@@ -24,7 +24,7 @@ export class LocalStorage extends Store {
     return null;
   }
 
-  set<T>(key: string, value: T): T | null {
+  public set<T>(key: string, value: T): T | null {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {
@@ -38,7 +38,7 @@ export class LocalStorage extends Store {
     return value;
   }
 
-  remove(key: string): void {
+  public remove(key: string): void {
     try {
       localStorage.removeItem(key);
     } catch (e) {

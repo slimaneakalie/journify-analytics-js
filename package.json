@@ -1,6 +1,6 @@
 {
   "name": "@journifyio/analytics",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Journify analytics SDK in JavaScript",
   "main": "lib/es5/index.js",
   "types": "lib/es5/index.d.ts",
@@ -13,7 +13,8 @@
   "license": "MIT",
   "keywords": ["journify", "analytics"],
   "scripts": {
-    "compile": "rm -rf ./dist/lib && tsc --build tsconfig.json . && tsc --build tsconfig.es5.json ."
+    "compile": "rm -rf ./dist/lib && tsc --build tsconfig.json . && tsc --build tsconfig.es5.json .",
+    "release": "npm run compile && npm publish --access=public"
   },
   "dependencies": {
     "@lukeed/uuid": "^2.0.0",

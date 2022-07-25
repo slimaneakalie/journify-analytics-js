@@ -125,7 +125,7 @@ export class EventQueue extends Emitter {
 
     const hook = plugin[event.type];
     console.log("hook: ", hook, ", event.type: ", event.type);
-    return hook(ctxToDeliver);
+    return hook.apply(plugin, [ctxToDeliver]);
   }
 
   private handleFlushError(ctxToDeliver: Context, err: any) {

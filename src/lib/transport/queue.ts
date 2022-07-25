@@ -21,8 +21,10 @@ export class EventQueue extends Emitter {
       options?.maxAttempts ?? MAX_ATTEMPTS_DEFAULT
     );
 
-    this.pQueue.on(NEW_OPERATION_DELAY_TIMEOUT, () => {
-      this.flush();
+    this.pQueue.on(NEW_OPERATION_DELAY_TIMEOUT, async () => {
+      console.log("NEW_OPERATION_DELAY_TIMEOUT listener: flush start");
+      await this.flush();
+      console.log("NEW_OPERATION_DELAY_TIMEOUT listener: flush end");
     });
 
     this.plugins = plugins;
@@ -76,6 +78,7 @@ export class EventQueue extends Emitter {
   }
 
   private async flush(): Promise<void> {
+    console.log("this.flushing: ", this.flushing);
     if (this.flushing) {
       return;
     }

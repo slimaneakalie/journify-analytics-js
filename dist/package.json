@@ -1,5 +1,5 @@
 {
-  "name": "@journify/analytics",
+  "name": "@journifyio/analytics",
   "version": "0.0.1",
   "description": "Journify analytics SDK in JavaScript",
   "main": "lib/es5/index.js",

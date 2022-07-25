@@ -89,6 +89,7 @@ export class EventQueue extends Emitter {
       const deliveredCtx = await this.runPlugins(ctxToDeliver);
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
     } catch (err: any) {
+      console.log("Flush error: ", err);
       this.handleFlushError(ctxToDeliver, err);
     }
 
@@ -115,7 +116,8 @@ export class EventQueue extends Emitter {
     }
 
     const hook = plugin[event.type];
-    return hook.apply(plugin, [ctxToDeliver]);
+    console.log("hook: ", hook, ", event.type: ", event.type);
+    return hook(ctxToDeliver);
   }
 
   private handleFlushError(ctxToDeliver: Context, err: any) {

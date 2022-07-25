@@ -1,5 +1,8 @@
 import { Context } from "./context";
-import { OperationsPriorityQueue } from "../lib/priorityQueue";
+import {
+  NEW_OPERATION_DELAY_TIMEOUT,
+  OperationsPriorityQueue,
+} from "../lib/priorityQueue";
 import { Emitter } from "./emitter";
 import { isOffline } from "./utils";
 import { JournifyPlugin } from "./plugins/plugin";
@@ -17,6 +20,11 @@ export class EventQueue extends Emitter {
     this.pQueue = new OperationsPriorityQueue<Context>(
       options?.maxAttempts ?? MAX_ATTEMPTS_DEFAULT
     );
+
+    this.pQueue.on(NEW_OPERATION_DELAY_TIMEOUT, () => {
+      this.flush();
+    });
+
     this.plugins = plugins;
 
     this.pQueue.print();

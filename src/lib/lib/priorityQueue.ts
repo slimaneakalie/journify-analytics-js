@@ -1,14 +1,18 @@
+import { Emitter } from "../transport/emitter";
+import exp from "constants";
+
 export interface WithId {
   getId(): string;
 }
 
-export class OperationsPriorityQueue<T extends WithId> {
+export class OperationsPriorityQueue<T extends WithId> extends Emitter {
   private delayedOperations: T[];
   private nowOperations: T[];
   private readonly attempts: Record<string, number>;
   private readonly maxAttempts: number;
 
   public constructor(maxAttempts: number) {
+    super();
     this.maxAttempts = maxAttempts;
     this.nowOperations = [];
     this.delayedOperations = [];
@@ -52,6 +56,8 @@ export class OperationsPriorityQueue<T extends WithId> {
         (f) => f.getId() !== operation.getId()
       );
     }, delayMs);
+
+    this.emit(NEW_OPERATION_DELAY_TIMEOUT);
 
     return true;
   }
@@ -105,3 +111,5 @@ export class OperationsPriorityQueue<T extends WithId> {
     );
   }
 }
+
+export const NEW_OPERATION_DELAY_TIMEOUT = "NEW_OPERATION_DELAY_TIMEOUT";

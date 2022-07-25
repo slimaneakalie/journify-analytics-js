@@ -50,7 +50,11 @@ export class OperationsPriorityQueue<T extends WithId> extends Emitter {
     this.delayedOperations.push(operation);
 
     const delayMs = OperationsPriorityQueue.backoffDelayInMs(attempts - 1);
+
+    console.log("delayMs: ", delayMs);
+
     setTimeout(() => {
+      console.log("timeout callback from queue");
       this.nowOperations.push(operation);
       this.delayedOperations = this.delayedOperations.filter(
         (f) => f.getId() !== operation.getId()

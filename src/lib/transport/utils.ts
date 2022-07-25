@@ -1,4 +1,4 @@
-import { Context } from "./context";
+import { Buffer } from "buffer";
 
 export function isOffline(): boolean {
   return !isOnline();

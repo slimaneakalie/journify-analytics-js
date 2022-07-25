@@ -1,12 +1,14 @@
 {
   "name": "@journifyio/analytics",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Journify analytics SDK in JavaScript",
   "main": "dist/lib/es5/index.js",
   "types": "dist/lib/es5/index.d.ts",
   "module": "dist/lib/es6/index.js",
   "sideEffects": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": "git@github.com:slimaneakalie/journify-analytics-js.git",
   "homepage": "https://github.com/slimaneakalie/journify-analytics-js",
   "author": "Slimane Akalië",

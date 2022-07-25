@@ -6,6 +6,9 @@
   "repository": "git@github.com:slimaneakalie/journify-analytics-js.git",
   "author": "Slimane Akalië",
   "license": "MIT",
+  "scripts": {
+    "compile": "rm -rf ./dist/lib && tsc --build tsconfig.json . && tsc --build tsconfig.es5.json ."
+  },
   "dependencies": {
     "@lukeed/uuid": "^2.0.0",
     "@types/js-cookie": "^3.0.2",
@@ -13,5 +16,8 @@
     "@types/spark-md5": "^3.0.2",
     "js-cookie": "^3.0.1",
     "spark-md5": "^3.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
   }
 }

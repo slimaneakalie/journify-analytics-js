@@ -2,7 +2,7 @@ export interface WithId {
   getId(): string;
 }
 
-export class OperationsPriorityQueue<T extends WithID> {
+export class OperationsPriorityQueue<T extends WithId> {
   private delayedOperations: T[];
   private nowOperations: T[];
   private readonly attempts: Record<string, number>;
@@ -45,22 +45,15 @@ export class OperationsPriorityQueue<T extends WithID> {
 
     this.delayedOperations.push(operation);
 
-    const delayMs = this.backoffDelayInMs(attempts - 1);
+    const delayMs = OperationsPriorityQueue.backoffDelayInMs(attempts - 1);
     setTimeout(() => {
       this.nowOperations.push(operation);
       this.delayedOperations = this.delayedOperations.filter(
-        (f) => f.id !== operation.id
+        (f) => f.getId() !== operation.getId()
       );
     }, delayMs);
 
     return true;
-  }
-
-  private backoffDelayInMs(attempt: number): number {
-    const random = Math.random() + 1;
-    const minTimeout = 500;
-    const factor = 2;
-    return random * minTimeout * Math.pow(factor, attempt);
   }
 
   public isEmpty(): boolean {
@@ -69,6 +62,13 @@ export class OperationsPriorityQueue<T extends WithID> {
 
   public pop(): T | undefined {
     return this.nowOperations.shift();
+  }
+
+  private static backoffDelayInMs(attempt: number): number {
+    const random = Math.random() + 1;
+    const minTimeout = 500;
+    const factor = 2;
+    return random * minTimeout * Math.pow(factor, attempt);
   }
 
   private newAttempt(operation: T): number {

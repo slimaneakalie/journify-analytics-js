@@ -21,9 +21,14 @@ export class EventQueue extends Emitter {
   }
 
   public async deliver(ctx: Context): Promise<Context> {
-    this.pQueue.push(ctx);
+    const accepted = this.pQueue.push(ctx);
+    if (!accepted[0]) {
+      console.log("Context was not accepted");
+      console.log(ctx);
+    }
+
     const deliveredCtx = this.subscribeToDelivery(ctx);
-    this.flush();
+    await this.flush();
     return deliveredCtx;
   }
 

@@ -18,17 +18,31 @@ export class EventQueue extends Emitter {
       options?.maxAttempts ?? MAX_ATTEMPTS_DEFAULT
     );
     this.plugins = plugins;
+
+    this.pQueue.print();
   }
 
   public async deliver(ctx: Context): Promise<Context> {
+    this.pQueue.print();
     const accepted = this.pQueue.push(ctx);
+    console.log("Context was pushed");
+
+    this.pQueue.print();
+
     if (!accepted[0]) {
       console.log("Context was not accepted");
+      console.log(ctx);
+    } else {
+      console.log("Context was accepted");
       console.log(ctx);
     }
 
     const deliveredCtx = this.subscribeToDelivery(ctx);
     await this.flush();
+
+    console.log("Flushing was done");
+    this.pQueue.print();
+
     return deliveredCtx;
   }
 
@@ -38,8 +52,10 @@ export class EventQueue extends Emitter {
         if (flushedCtx.isSame(sentCtx)) {
           this.off(FLUSH_EVENT_NAME, onDeliver);
           if (delivered) {
+            console.log("context was delivered");
             resolve(flushedCtx);
           } else {
+            console.log("context wasn't delivered");
             resolve(flushedCtx);
           }
         }

@@ -64,6 +64,18 @@ export class OperationsPriorityQueue<T extends WithId> {
     return this.nowOperations.shift();
   }
 
+  //TODO: remove this method
+  public print() {
+    console.log(
+      "this.nowOperations: ",
+      this.nowOperations,
+      ", this.delayedOperations: ",
+      this.delayedOperations,
+      "this.maxAttempts: ",
+      this.maxAttempts
+    );
+  }
+
   private static backoffDelayInMs(attempt: number): number {
     const random = Math.random() + 1;
     const minTimeout = 500;

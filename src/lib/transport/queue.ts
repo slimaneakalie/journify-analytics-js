@@ -101,6 +101,7 @@ export class EventQueue extends Emitter {
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
     } catch (err: any) {
       console.log("Flush error: ", err);
+      this.flushing = false;
       this.handleFlushError(ctxToDeliver, err);
     }
 

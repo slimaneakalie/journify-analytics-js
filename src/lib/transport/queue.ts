@@ -5,14 +5,18 @@ import { isOffline } from "./utils";
 import { JournifyPlugin } from "./plugins/plugin";
 
 const FLUSH_EVENT_NAME = "flush";
+const MAX_ATTEMPTS_DEFAULT = 5;
 
 export class EventQueue extends Emitter {
   private pQueue: OperationsPriorityQueue<Context>;
-  private flushing = false;
   private readonly plugins: JournifyPlugin[];
+  private flushing = false;
 
-  public constructor(plugins: JournifyPlugin[]) {
+  public constructor(plugins: JournifyPlugin[], options?: EventQueueOptions) {
     super();
+    this.pQueue = new OperationsPriorityQueue<Context>(
+      options?.maxAttempts ?? MAX_ATTEMPTS_DEFAULT
+    );
     this.plugins = plugins;
   }
 
@@ -46,6 +50,8 @@ export class EventQueue extends Emitter {
     if (this.flushing) {
       return;
     }
+
+    this.flushing = true;
 
     if (this.pQueue.isEmpty() || isOffline()) {
       this.flushing = false;
@@ -98,4 +104,8 @@ export class EventQueue extends Emitter {
       this.emit(FLUSH_EVENT_NAME, ctxToDeliver, false);
     }
   }
+}
+
+export interface EventQueueOptions {
+  maxAttempts?: number;
 }

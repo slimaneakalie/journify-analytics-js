@@ -15,3 +15,7 @@ export function isOnline(): boolean {
 export function isBrowser(): boolean {
   return typeof window !== "undefined";
 }
+
+export function encodeBase64(str: string): string {
+  return Buffer.from(str).toString("base64");
+}

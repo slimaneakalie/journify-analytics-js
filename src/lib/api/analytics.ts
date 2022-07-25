@@ -9,11 +9,13 @@ import { MemoryStore } from "../store/memoryStore";
 import { EventFactory } from "../transport/eventFactory";
 import { JournifyEvent } from "../transport/event";
 import { EventQueue } from "../transport/queue";
-import { JOURNIFY_PLUGINS } from "../transport/plugins/plugin";
+import { JournifyioPlugin } from "../transport/plugins/journifyio";
+import { JournifyPlugin } from "../transport/plugins/plugin";
 
 const IDENTIFY_EVENT_NAME = "identify";
 
 export class Analytics extends Emitter {
+  private settings: AnalyticsSettings;
   private readonly user: User;
   private eventFactory: EventFactory;
   private eventQueue: EventQueue;
@@ -29,9 +31,13 @@ export class Analytics extends Emitter {
       : new NullStore();
 
     const memoryStore = new MemoryStore();
+
+    this.settings = settings;
     this.user = new User(localStorage, cookiesStore, memoryStore);
     this.eventFactory = new EventFactory(this.user);
-    this.eventQueue = new EventQueue(JOURNIFY_PLUGINS);
+
+    const plugins: JournifyPlugin[] = [new JournifyioPlugin(settings)];
+    this.eventQueue = new EventQueue(plugins);
   }
 
   public async identify(userId: string, traits?: Traits): Promise<Context> {
@@ -53,4 +59,5 @@ export class Analytics extends Emitter {
 
 export interface AnalyticsSettings {
   writeKey: string;
+  apiHost?: string;
 }

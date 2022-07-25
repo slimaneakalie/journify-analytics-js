@@ -1,3 +1,4 @@
-import { Analytics, AnalyticsSettings } from "./api/analytics";
+import { AnalyticsBrowser } from "./api/browser";
+import { AnalyticsSettings } from "./api/analytics";
 
-export { Analytics, AnalyticsSettings };
+export { AnalyticsBrowser, AnalyticsSettings };

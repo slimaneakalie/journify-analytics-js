@@ -1,6 +1,6 @@
 {
   "name": "@journifyio/analytics",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Journify analytics SDK in JavaScript",
   "main": "index.js",
   "repository": "git@github.com:slimaneakalie/journify-analytics-js.git",

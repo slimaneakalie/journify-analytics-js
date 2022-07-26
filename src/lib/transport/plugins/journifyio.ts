@@ -15,9 +15,10 @@ export class JournifyioPlugin implements JournifyPlugin {
   private async post(ctx: Context): Promise<Context> {
     const apiHost = this.analyticsSettings.apiHost ?? "https://api.journify.io";
     const event = ctx.getEvent();
+    const eventUrl = `${apiHost}/v1/${event.type}`;
     const token = `Basic ${encodeBase64(this.analyticsSettings.writeKey)}`;
 
-    const response = await fetch(`${apiHost}/v1/${event.type}`, {
+    const response = await fetch(eventUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +29,9 @@ export class JournifyioPlugin implements JournifyPlugin {
     });
 
     if (!response.ok) {
-      throw new Error("Message Rejected");
+      throw new Error(
+        `POST request to ${eventUrl} returned ${response.status} HTTP status`
+      );
     }
 
     return ctx;

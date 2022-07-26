@@ -4,19 +4,17 @@ import * as md5 from "spark-md5";
 import { User } from "../domain/user";
 import { JournifyEvent } from "./event";
 
-export class EventFactory {
-  private user: User;
+export interface EventFactory {
+  newIdentifyEvent(user: User): JournifyEvent;
+}
 
-  public constructor(user: User) {
-    this.user = user;
-  }
-
-  public newIdentifyEvent(): JournifyEvent {
+export class EventFactoryImpl implements EventFactory {
+  public newIdentifyEvent(user: User): JournifyEvent {
     const baseEvent: JournifyEvent = {
       type: "identify" as const,
-      userId: this.user.getUserId(),
-      anonymousId: this.user.getAnonymousId(),
-      traits: this.user.getTraits(),
+      userId: user.getUserId(),
+      anonymousId: user.getAnonymousId(),
+      traits: user.getTraits(),
     };
 
     return this.normalizeEvent(baseEvent);

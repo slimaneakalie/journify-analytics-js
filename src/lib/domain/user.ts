@@ -5,7 +5,38 @@ import { Store } from "../store/store";
 const ANONYMOUS_ID_PERSISTENCE_KEY = "journifyio_anonymous_id";
 const USER_ID_PERSISTENCE_KEY = "journifyio_user_id";
 
-export class User {
+export interface User {
+  identify(userId?: string, traits?: Traits);
+  getUserId(): string | null;
+  getAnonymousId(): string | null;
+  getTraits(): Traits | null;
+}
+
+export interface UserFactory {
+  getUserFromBrowser(): User;
+}
+
+export class UserFactoryImpl implements UserFactory {
+  private readonly localStorage: Store;
+  private readonly cookiesStore: Store;
+  private readonly memoryStore: Store;
+
+  public constructor(
+    localStorage: Store,
+    cookiesStore: Store,
+    memoryStore: Store
+  ) {
+    this.localStorage = localStorage;
+    this.cookiesStore = cookiesStore;
+    this.memoryStore = memoryStore;
+  }
+
+  public getUserFromBrowser(): User {
+    return new UserImpl(this.localStorage, this.cookiesStore, this.memoryStore);
+  }
+}
+
+class UserImpl implements User {
   private localStorage: Store;
   private cookiesStore: Store;
   private memoryStore: Store;

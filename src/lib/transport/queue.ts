@@ -38,11 +38,19 @@ export class EventQueue extends Emitter {
   }
 
   private async subscribeToDelivery(sentCtx: Context): Promise<Context> {
-    const promiseExecutor = (resolve) => {
-      const onDeliver = (flushedCtx: Context, _: boolean): void => {
-        if (flushedCtx.isSame(sentCtx)) {
-          this.off(FLUSH_EVENT_NAME, onDeliver);
+    const promiseExecutor = (resolve, reject) => {
+      const onDeliver = (flushedCtx: Context, delivered: boolean): void => {
+        if (!flushedCtx.isSame(sentCtx)) {
+          return;
+        }
+
+        this.off(FLUSH_EVENT_NAME, onDeliver);
+
+        if (delivered) {
           resolve(flushedCtx);
+        } else {
+          const failureReason = flushedCtx.getFailedDelivery()?.reason;
+          reject(failureReason);
         }
       };
 

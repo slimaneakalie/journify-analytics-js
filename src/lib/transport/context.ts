@@ -27,6 +27,10 @@ export class Context implements WithId {
   public setFailedDelivery(options: ContextFailedDelivery) {
     this.failedDelivery = options;
   }
+
+  public getFailedDelivery(): ContextFailedDelivery {
+    return this.failedDelivery;
+  }
 }
 
 export interface ContextFailedDelivery {

@@ -1,6 +1,6 @@
 import { Context } from "./context";
 import {
-  NEW_OPERATION_DELAY_TIMEOUT,
+  ON_OPERATION_DELAY_FINISH,
   OperationsPriorityQueue,
 } from "../lib/priorityQueue";
 import { Emitter } from "./emitter";
@@ -21,10 +21,10 @@ export class EventQueue extends Emitter {
       options?.maxAttempts ?? MAX_ATTEMPTS_DEFAULT
     );
 
-    this.pQueue.on(NEW_OPERATION_DELAY_TIMEOUT, async () => {
-      console.log("NEW_OPERATION_DELAY_TIMEOUT listener: flush start");
+    this.pQueue.on(ON_OPERATION_DELAY_FINISH, async () => {
+      console.log("ON_OPERATION_DELAY_FINISH listener: flush start");
       await this.flush();
-      console.log("NEW_OPERATION_DELAY_TIMEOUT listener: flush end");
+      console.log("ON_OPERATION_DELAY_FINISH listener: flush end");
     });
 
     this.plugins = plugins;

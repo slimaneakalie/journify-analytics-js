@@ -1,5 +1,4 @@
 import { Emitter } from "../transport/emitter";
-import exp from "constants";
 
 export interface WithId {
   getId(): string;
@@ -59,9 +58,9 @@ export class OperationsPriorityQueue<T extends WithId> extends Emitter {
       this.delayedOperations = this.delayedOperations.filter(
         (f) => f.getId() !== operation.getId()
       );
-    }, delayMs);
 
-    this.emit(NEW_OPERATION_DELAY_TIMEOUT);
+      this.emit(ON_OPERATION_DELAY_FINISH);
+    }, delayMs);
 
     return true;
   }
@@ -116,4 +115,4 @@ export class OperationsPriorityQueue<T extends WithId> extends Emitter {
   }
 }
 
-export const NEW_OPERATION_DELAY_TIMEOUT = "NEW_OPERATION_DELAY_TIMEOUT";
+export const ON_OPERATION_DELAY_FINISH = "onOperationDelayFinish";

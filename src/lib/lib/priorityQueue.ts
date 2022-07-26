@@ -50,10 +50,7 @@ export class OperationsPriorityQueue<T extends WithId> extends Emitter {
 
     const delayMs = OperationsPriorityQueue.backoffDelayInMs(attempts - 1);
 
-    console.log("delayMs: ", delayMs);
-
     setTimeout(() => {
-      console.log("timeout callback from queue");
       this.nowOperations.push(operation);
       this.delayedOperations = this.delayedOperations.filter(
         (f) => f.getId() !== operation.getId()
@@ -71,18 +68,6 @@ export class OperationsPriorityQueue<T extends WithId> extends Emitter {
 
   public pop(): T | undefined {
     return this.nowOperations.shift();
-  }
-
-  //TODO: remove this method
-  public print() {
-    console.log(
-      "this.nowOperations: ",
-      this.nowOperations,
-      ", this.delayedOperations: ",
-      this.delayedOperations,
-      "this.maxAttempts: ",
-      this.maxAttempts
-    );
   }
 
   private static backoffDelayInMs(attempt: number): number {

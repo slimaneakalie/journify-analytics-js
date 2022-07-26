@@ -22,52 +22,27 @@ export class EventQueue extends Emitter {
     );
 
     this.pQueue.on(ON_OPERATION_DELAY_FINISH, async () => {
-      console.log("ON_OPERATION_DELAY_FINISH listener: flush start");
       await this.flush();
-      console.log("ON_OPERATION_DELAY_FINISH listener: flush end");
     });
 
     this.plugins = plugins;
-
-    this.pQueue.print();
   }
 
   public async deliver(ctx: Context): Promise<Context> {
-    this.pQueue.print();
-    const accepted = this.pQueue.push(ctx);
-    console.log("Context was pushed");
-
-    this.pQueue.print();
-
-    if (!accepted[0]) {
-      console.log("Context was not accepted");
-      console.log(ctx);
-    } else {
-      console.log("Context was accepted");
-      console.log(ctx);
-    }
+    this.pQueue.push(ctx);
 
     const deliveredCtx = this.subscribeToDelivery(ctx);
     await this.flush();
-
-    console.log("Flushing was done");
-    this.pQueue.print();
 
     return deliveredCtx;
   }
 
   private async subscribeToDelivery(sentCtx: Context): Promise<Context> {
     const promiseExecutor = (resolve) => {
-      const onDeliver = (flushedCtx: Context, delivered: boolean): void => {
+      const onDeliver = (flushedCtx: Context, _: boolean): void => {
         if (flushedCtx.isSame(sentCtx)) {
           this.off(FLUSH_EVENT_NAME, onDeliver);
-          if (delivered) {
-            console.log("context was delivered");
-            resolve(flushedCtx);
-          } else {
-            console.log("context wasn't delivered");
-            resolve(flushedCtx);
-          }
+          resolve(flushedCtx);
         }
       };
 
@@ -78,7 +53,6 @@ export class EventQueue extends Emitter {
   }
 
   private async flush(): Promise<void> {
-    console.log("this.flushing: ", this.flushing);
     if (this.flushing) {
       return;
     }
@@ -100,7 +74,6 @@ export class EventQueue extends Emitter {
       const deliveredCtx = await this.runPlugins(ctxToDeliver);
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
     } catch (err: any) {
-      console.log("Flush error: ", err);
       this.flushing = false;
       this.handleFlushError(ctxToDeliver, err);
     }
@@ -128,7 +101,6 @@ export class EventQueue extends Emitter {
     }
 
     const hook = plugin[event.type];
-    console.log("hook: ", hook, ", event.type: ", event.type);
     return hook.apply(plugin, [ctxToDeliver]);
   }
 

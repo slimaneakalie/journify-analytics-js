@@ -10,10 +10,7 @@ export class JournifyioPlugin implements JournifyPlugin {
     this.analyticsSettings = analyticsSettings;
   }
 
-  public identify(ctx: Context): Promise<Context> {
-    console.log("this.analyticsSettings: ", this.analyticsSettings);
-    return this.post(ctx);
-  }
+  public identify = this.post;
 
   private async post(ctx: Context): Promise<Context> {
     const apiHost = this.analyticsSettings.apiHost ?? "https://api.journify.io";

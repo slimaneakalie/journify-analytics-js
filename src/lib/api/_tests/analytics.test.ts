@@ -1,4 +1,3 @@
-import chai from "chai";
 import {
   Analytics,
   AnalyticsDependencies,
@@ -28,7 +27,6 @@ import {
   ContextMock,
 } from "../../../test/mocks/context";
 
-const expect = chai.expect;
 describe("Analytics class", () => {
   describe("identify function", () => {
     it("Should dispatch identify event with the right user data", async () => {
@@ -46,8 +44,8 @@ describe("Analytics class", () => {
       };
       const userMockCallbacks: UserMockCallbacks = {
         identify: (userId?: string, traits: Traits = {}) => {
-          expect(userId).to.equal(userIdByClient);
-          expect(traits).to.deep.equal(traitsByClient);
+          expect(userId).toEqual(userIdByClient);
+          expect(traits).toEqual(traitsByClient);
         },
       };
 
@@ -69,7 +67,7 @@ describe("Analytics class", () => {
       };
       const eventFactoryCallbacks: EventFactoryCallbacks = {
         newIdentifyEvent: (userParam: User): JournifyEvent => {
-          expect(userParam).to.equal(user);
+          expect(userParam).toEqual(user);
           return event;
         },
       };
@@ -78,8 +76,8 @@ describe("Analytics class", () => {
       const ctx: Context = new ContextMock("context-id", event);
       const contextFactoryCallbacks: ContextFactoryCallbacks = {
         newContext: (eventParam: JournifyEvent, id?: string): Context => {
-          expect(eventParam).to.equal(event);
-          expect(id).to.be.undefined;
+          expect(eventParam).toEqual(event);
+          expect(id).toBeUndefined();
           return ctx;
         },
       };
@@ -87,7 +85,7 @@ describe("Analytics class", () => {
 
       const eventQueueCallbacks: EventQueueMockCallbacks = {
         deliver: (ctxParam: Context): Promise<Context> => {
-          expect(ctxParam).to.equal(ctx);
+          expect(ctxParam).toEqual(ctx);
           return Promise.resolve(ctx);
         },
       };
@@ -111,7 +109,7 @@ describe("Analytics class", () => {
         traitsByClient
       );
 
-      expect(deliveredCtx).to.deep.equal(ctx);
+      expect(deliveredCtx).toEqual(ctx);
     });
   });
 });

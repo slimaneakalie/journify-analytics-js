@@ -7,10 +7,11 @@ import { Emitter } from "./emitter";
 import { isOffline } from "./utils";
 import { JournifyPlugin } from "./plugins/plugin";
 
-const FLUSH_EVENT_NAME = "flush";
-const MAX_ATTEMPTS_DEFAULT = 5;
+export interface EventQueue {
+  deliver(ctx: Context): Promise<Context>;
+}
 
-export class EventQueue extends Emitter {
+export class EventQueueImpl extends Emitter implements EventQueue {
   private pQueue: OperationsPriorityQueue<Context>;
   private readonly plugins: JournifyPlugin[];
   private flushing = false;
@@ -124,3 +125,6 @@ export class EventQueue extends Emitter {
 export interface EventQueueOptions {
   maxAttempts?: number;
 }
+
+const FLUSH_EVENT_NAME = "flush";
+const MAX_ATTEMPTS_DEFAULT = 5;

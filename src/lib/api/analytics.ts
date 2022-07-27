@@ -1,48 +1,39 @@
-import { Context } from "../transport/context";
+import { Context, ContextFactory } from "../transport/context";
 import { Emitter } from "../transport/emitter";
 import { Traits } from "../domain/traits";
-import { User } from "../domain/user";
-import { LocalStorage } from "../store/localStorage";
-import { NullStore } from "../store/nullStore";
-import { Cookies } from "../store/cookies";
-import { MemoryStore } from "../store/memoryStore";
+import { User, UserFactory } from "../domain/user";
 import { EventFactory } from "../transport/eventFactory";
 import { JournifyEvent } from "../transport/event";
 import { EventQueue } from "../transport/queue";
-import { JournifyioPlugin } from "../transport/plugins/journifyio";
-import { JournifyPlugin } from "../transport/plugins/plugin";
 
 const IDENTIFY_EVENT_NAME = "identify";
 
+export interface AnalyticsDependencies {
+  userFactory: UserFactory;
+  eventFactory: EventFactory;
+  contextFactory: ContextFactory;
+  eventQueue: EventQueue;
+}
+
 export class Analytics extends Emitter {
-  private settings: AnalyticsSettings;
+  private readonly settings: AnalyticsSettings;
   private readonly user: User;
-  private eventFactory: EventFactory;
-  private eventQueue: EventQueue;
+  private readonly eventFactory: EventFactory;
+  private readonly contextFactory: ContextFactory;
+  private readonly eventQueue: EventQueue;
 
-  public constructor(settings: AnalyticsSettings) {
+  public constructor(settings: AnalyticsSettings, deps: AnalyticsDependencies) {
     super();
-    const localStorage = LocalStorage.isAvailable()
-      ? new LocalStorage()
-      : new NullStore();
-
-    const cookiesStore = Cookies.isAvailable()
-      ? new Cookies()
-      : new NullStore();
-
-    const memoryStore = new MemoryStore();
-
     this.settings = settings;
-    this.user = new User(localStorage, cookiesStore, memoryStore);
-    this.eventFactory = new EventFactory(this.user);
-
-    const plugins: JournifyPlugin[] = [new JournifyioPlugin(settings)];
-    this.eventQueue = new EventQueue(plugins);
+    this.user = deps.userFactory.getUserFromBrowser();
+    this.eventFactory = deps.eventFactory;
+    this.contextFactory = deps.contextFactory;
+    this.eventQueue = deps.eventQueue;
   }
 
   public async identify(userId: string, traits?: Traits): Promise<Context> {
     this.user.identify(userId, traits);
-    const event = this.eventFactory.newIdentifyEvent();
+    const event = this.eventFactory.newIdentifyEvent(this.user);
     const ctx = await this.dispatchEvent(event);
     const ctxEvent = ctx.getEvent();
 
@@ -51,7 +42,7 @@ export class Analytics extends Emitter {
   }
 
   private async dispatchEvent(event: JournifyEvent): Promise<Context> {
-    const eventCtx = new Context(event);
+    const eventCtx = this.contextFactory.newContext(event);
     const deliveredCtx: Context = await this.eventQueue.deliver(eventCtx);
     return deliveredCtx;
   }

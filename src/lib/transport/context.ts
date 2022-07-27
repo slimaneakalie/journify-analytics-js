@@ -2,7 +2,24 @@ import { v4 as uuid } from "@lukeed/uuid";
 import { JournifyEvent } from "./event";
 import { WithId } from "../lib/priorityQueue";
 
-export class Context implements WithId {
+export interface Context extends WithId {
+  getEvent(): JournifyEvent;
+  isSame(other: Context): boolean;
+  setFailedDelivery(failedDelivery: ContextFailedDelivery);
+  getFailedDelivery(): ContextFailedDelivery;
+}
+
+export interface ContextFactory {
+  newContext(event: JournifyEvent, id?: string): Context;
+}
+
+export class ContextFactoryImpl implements ContextFactory {
+  newContext(event: JournifyEvent, id?: string): Context {
+    return new ContextImpl(event, id);
+  }
+}
+
+class ContextImpl implements Context {
   private readonly event: JournifyEvent;
   private readonly id: string;
   private failedDelivery?: ContextFailedDelivery;
@@ -21,11 +38,11 @@ export class Context implements WithId {
   }
 
   public isSame(other: Context): boolean {
-    return other.id === this.id;
+    return other.getId() === this.id;
   }
 
-  public setFailedDelivery(options: ContextFailedDelivery) {
-    this.failedDelivery = options;
+  public setFailedDelivery(failedDelivery: ContextFailedDelivery) {
+    this.failedDelivery = failedDelivery;
   }
 
   public getFailedDelivery(): ContextFailedDelivery {

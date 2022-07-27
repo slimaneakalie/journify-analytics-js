@@ -21,7 +21,7 @@
     "test": "jest",
     "clean": "shx rm -rf dist",
     "build": "npm run clean && tsc && tsc -m es6 --outDir dist/lib/es6 && webpack",
-    "release": "npm run build && npm publish --access=public",
+    "release": "npm run test && npm run build && npm publish --access=public",
     "patch-version": "npm version patch && git push",
     "minor-version": "npm version minor && git push",
     "major-version": "npm version major && git push"

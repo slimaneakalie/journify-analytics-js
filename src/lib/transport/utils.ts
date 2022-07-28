@@ -1,6 +1,4 @@
 import { Buffer } from "buffer";
-// @ts-ignore
-import packageJson from "PackageJson";
 
 export function isOffline(): boolean {
   return !isOnline();
@@ -22,6 +20,6 @@ export function encodeBase64(str: string): string {
   return Buffer.from(str).toString("base64");
 }
 
-export function getLibraryVersion(): string {
-  return packageJson.version;
+export function getLibVersion(): string {
+  return process.env.LIB_VERSION;
 }

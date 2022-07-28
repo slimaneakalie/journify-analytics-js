@@ -1,5 +1,7 @@
 const path = require("path");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const webpack = require("webpack");
+const packageJson = require("./package.json");
 
 const PATHS = {
   entryPoint: path.resolve(__dirname, "src/lib/index.ts"),
@@ -22,9 +24,6 @@ const config = {
   },
   resolve: {
     extensions: [".ts", ".js"],
-    alias: {
-      PackageJson$: path.resolve(__dirname, "./package.json"),
-    },
   },
   devtool: "source-map",
   optimization: {
@@ -44,6 +43,11 @@ const config = {
       },
     ],
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env.LIB_VERSION": JSON.stringify(packageJson.version),
+    }),
+  ],
 };
 
 module.exports = config;

@@ -3,7 +3,7 @@ import md5 from "spark-md5";
 
 import { User } from "../domain/user";
 import { JournifyEvent } from "./event";
-import { getLibraryVersion } from "./utils";
+import { getLibVersion } from "./utils";
 
 export interface EventFactory {
   newIdentifyEvent(user: User): JournifyEvent;
@@ -31,7 +31,7 @@ export class EventFactoryImpl implements EventFactory {
     if (!ctx.library) {
       ctx.library = {
         name: "@journifyio/analytics.js",
-        version: getLibraryVersion(),
+        version: getLibVersion(),
       };
     }
 

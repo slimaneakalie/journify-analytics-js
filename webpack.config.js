@@ -1,5 +1,4 @@
 const path = require("path");
-const webpack = require("webpack");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 const PATHS = {
@@ -16,8 +15,10 @@ const config = {
   output: {
     path: PATHS.bundles,
     filename: "[name].js",
-    libraryTarget: "umd",
-    library: "journifyio",
+    library: {
+      name: "journifyio",
+      type: "window",
+    },
     umdNamedDefine: true,
   },
   resolve: {

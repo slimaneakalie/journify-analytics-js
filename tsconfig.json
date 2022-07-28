@@ -7,7 +7,8 @@
    "moduleResolution": "node",
    "sourceMap": true,
    "declaration": true,
-   "allowSyntheticDefaultImports": true
+   "allowSyntheticDefaultImports": true,
+   "allowJs": true
  },
  "include": ["src/lib/**/*"],
  "exclude": ["src/**/*.test.ts"]

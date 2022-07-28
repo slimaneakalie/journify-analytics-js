@@ -1,4 +1,4 @@
-import JsCookie from "js-cookie";
+import * as JsCookie from "js-cookie";
 
 import { getUrlLevels, parseUrl } from "./utils";
 import { Store } from "./store";

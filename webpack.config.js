@@ -45,7 +45,7 @@ const config = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env.LIB_VERSION": JSON.stringify(packageJson.version),
+      VERSION: JSON.stringify(packageJson.version),
     }),
   ],
 };

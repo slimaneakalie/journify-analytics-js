@@ -19,7 +19,6 @@ const config = {
       name: "journifyio",
       type: "window",
     },
-    umdNamedDefine: true,
   },
   resolve: {
     extensions: [".ts", ".js"],
@@ -38,7 +37,6 @@ const config = {
       {
         test: /\.ts$/,
         use: "ts-loader",
-        exclude: /node_modules/,
       },
     ],
   },

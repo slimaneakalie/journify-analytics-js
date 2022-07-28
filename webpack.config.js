@@ -23,7 +23,7 @@ const config = {
   resolve: {
     extensions: [".ts", ".js"],
     alias: {
-      PackageJson: path.resolve(__dirname, "package.json"),
+      PackageJson$: path.resolve(__dirname, "./package.json"),
     },
   },
   devtool: "source-map",

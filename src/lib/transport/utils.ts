@@ -1,5 +1,6 @@
 import { Buffer } from "buffer";
-const packageJson = require("PackageJson");
+// @ts-ignore
+import packageJson from "PackageJson";
 
 export function isOffline(): boolean {
   return !isOnline();

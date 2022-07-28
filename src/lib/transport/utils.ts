@@ -1,4 +1,5 @@
 import { Buffer } from "buffer";
+const packageJson = require("../../../package.json");
 
 export function isOffline(): boolean {
   return !isOnline();
@@ -18,4 +19,8 @@ export function isBrowser(): boolean {
 
 export function encodeBase64(str: string): string {
   return Buffer.from(str).toString("base64");
+}
+
+export function getLibraryVersion(): string {
+  return packageJson.version;
 }

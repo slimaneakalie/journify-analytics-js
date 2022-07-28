@@ -1,7 +1,5 @@
 import { Buffer } from "buffer";
-import path from "path";
-
-const packageJson = require(path.resolve(__dirname, "package.json"));
+const packageJson = require("PackageJson");
 
 export function isOffline(): boolean {
   return !isOnline();

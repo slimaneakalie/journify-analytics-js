@@ -83,7 +83,6 @@ describe("User interface", () => {
       const newTraits = {
         clicks: 337,
         location: "Morocco",
-        unique: uuid(),
       };
       user.identify(null, newTraits);
 
@@ -91,7 +90,6 @@ describe("User interface", () => {
         email: "user-10@gmail.com",
         clicks: 337,
         location: "Morocco",
-        unique: uuid(),
       };
 
       assertValueOnStores(
@@ -102,19 +100,34 @@ describe("User interface", () => {
     });
   });
 
-  /*describe("getUserId method", () => {
-    it("Should return null when there is no user id on different stores", () => {});
-    it("Should return the same user id from the stores", () => {});
+  describe("getUserId method", () => {
+    it("Should return null when there is no user id on different stores", () => {
+      const { local, cookies, memory } = createStoresForTest();
+      const factory = new UserFactoryImpl(local, cookies, memory);
+      const user = factory.newUser();
+      expect(user.getUserId()).toBeNull();
+    });
   });
 
   describe("getAnonymousId method", () => {
-    it("Should not return null for anonymous id", () => {});
+    it("Should not return null for anonymous id", () => {
+      const { local, cookies, memory } = createStoresForTest();
+      const factory = new UserFactoryImpl(local, cookies, memory);
+      const user = factory.newUser();
+      const anonymousId = user.getAnonymousId();
+      expect(anonymousId).toBeDefined();
+      expect(anonymousId.length).toBeGreaterThan(0);
+    });
   });
 
   describe("getTraits method", () => {
-    it("Should return an empty object when there is no traits on different stores", () => {});
-    it("Should return the same traits from the stores", () => {});
-  });*/
+    it("Should return an empty object when there is no traits on different stores", () => {
+      const { local, cookies, memory } = createStoresForTest();
+      const factory = new UserFactoryImpl(local, cookies, memory);
+      const user = factory.newUser();
+      expect(user.getTraits()).toEqual({});
+    });
+  });
 });
 
 function testFetchUserDataFromStore(storeKey: keyof TestStores) {

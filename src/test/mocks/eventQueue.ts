@@ -18,5 +18,5 @@ export class EventQueueMock implements EventQueue {
 }
 
 export interface EventQueueMockCallbacks {
-  deliver?: (ctx: Context) => Promise<Context>;
+  deliver?: jest.Func;
 }

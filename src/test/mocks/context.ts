@@ -58,5 +58,5 @@ export class ContextFactoryMock implements ContextFactory {
 }
 
 export interface ContextFactoryCallbacks {
-  newContext?: (event: JournifyEvent, id?: string) => Context;
+  newContext?: jest.Func;
 }

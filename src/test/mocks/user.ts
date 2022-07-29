@@ -37,7 +37,7 @@ export class UserMock implements User {
 }
 
 export interface UserMockCallbacks {
-  identify?: (userId?: string, traits?: Traits) => void;
+  identify?: jest.Func;
 }
 
 export class UserFactoryMock implements UserFactory {

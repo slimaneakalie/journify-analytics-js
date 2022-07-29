@@ -19,5 +19,5 @@ export class EventFactoryMock implements EventFactory {
 }
 
 export interface EventFactoryCallbacks {
-  newIdentifyEvent?: (user: User) => JournifyEvent;
+  newIdentifyEvent?: jest.Func;
 }

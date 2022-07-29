@@ -42,11 +42,9 @@ describe("Analytics class", () => {
         email: "example-15267@maily.net",
         location: "France",
       };
+
       const userMockCallbacks: UserMockCallbacks = {
-        identify: (userId?: string, traits: Traits = {}) => {
-          expect(userId).toEqual(userIdByClient);
-          expect(traits).toEqual(traitsByClient);
-        },
+        identify: jest.fn(),
       };
 
       const user: User = new UserMock(
@@ -65,29 +63,24 @@ describe("Analytics class", () => {
         traits: initialTraits,
         timestamp: new Date(),
       };
+
       const eventFactoryCallbacks: EventFactoryCallbacks = {
-        newIdentifyEvent: (userParam: User): JournifyEvent => {
-          expect(userParam).toEqual(user);
-          return event;
-        },
+        newIdentifyEvent: jest.fn(() => event),
       };
       const eventFactory = new EventFactoryMock(eventFactoryCallbacks);
 
       const ctx: Context = new ContextMock("context-id", event);
       const contextFactoryCallbacks: ContextFactoryCallbacks = {
-        newContext: (eventParam: JournifyEvent, id?: string): Context => {
+        newContext: jest.fn((eventParam: JournifyEvent, id?: string) => {
           expect(eventParam).toEqual(event);
           expect(id).toBeUndefined();
           return ctx;
-        },
+        }),
       };
       const contextFactory = new ContextFactoryMock(contextFactoryCallbacks);
 
       const eventQueueCallbacks: EventQueueMockCallbacks = {
-        deliver: (ctxParam: Context): Promise<Context> => {
-          expect(ctxParam).toEqual(ctx);
-          return Promise.resolve(ctx);
-        },
+        deliver: jest.fn(() => Promise.resolve(ctx)),
       };
       const eventQueue: EventQueue = new EventQueueMock(eventQueueCallbacks);
 
@@ -109,6 +102,16 @@ describe("Analytics class", () => {
         traitsByClient
       );
 
+      expect(userMockCallbacks.identify).toHaveBeenCalledTimes(1);
+      expect(userMockCallbacks.identify).toHaveBeenCalledWith(
+        userIdByClient,
+        traitsByClient
+      );
+      expect(eventFactoryCallbacks.newIdentifyEvent).toHaveBeenCalledTimes(1);
+      expect(eventFactoryCallbacks.newIdentifyEvent).toHaveBeenCalledWith(user);
+      expect(contextFactoryCallbacks.newContext).toHaveBeenCalledTimes(1);
+      expect(eventQueueCallbacks.deliver).toHaveBeenCalledTimes(1);
+      expect(eventQueueCallbacks.deliver).toHaveBeenCalledWith(ctx);
       expect(deliveredCtx).toEqual(ctx);
     });
   });

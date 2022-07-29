@@ -1,4 +1,4 @@
-import { Emitter } from "../transport/emitter";
+import { Emitter, EmitterImpl } from "../transport/emitter";
 
 export interface WithId {
   getId(): string;
@@ -12,7 +12,7 @@ export interface OperationsPriorityQueue<T extends WithId> extends Emitter {
 }
 
 export class OperationsPriorityQueueImpl<T extends WithId>
-  extends Emitter
+  extends EmitterImpl
   implements OperationsPriorityQueue<T>
 {
   private delayedOperations: T[];

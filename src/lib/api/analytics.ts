@@ -1,5 +1,5 @@
 import { Context, ContextFactory } from "../transport/context";
-import { Emitter } from "../transport/emitter";
+import { EmitterImpl } from "../transport/emitter";
 import { Traits } from "../domain/traits";
 import { User, UserFactory } from "../domain/user";
 import { EventFactory } from "../transport/eventFactory";
@@ -15,7 +15,7 @@ export interface AnalyticsDependencies {
   eventQueue: EventQueue;
 }
 
-export class Analytics extends Emitter {
+export class Analytics extends EmitterImpl {
   private readonly settings: AnalyticsSettings;
   private readonly user: User;
   private readonly eventFactory: EventFactory;

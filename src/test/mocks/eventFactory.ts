@@ -3,21 +3,17 @@ import { JournifyEvent } from "../../lib/domain/event";
 import { User } from "../../lib/domain/user";
 
 export class EventFactoryMock implements EventFactory {
-  private callbacks: EventFactoryCallbacks;
+  public funcs: EventFactoryFuncs;
 
-  public constructor(callbacks: EventFactoryCallbacks) {
-    this.callbacks = callbacks;
+  public constructor(funcs: EventFactoryFuncs) {
+    this.funcs = funcs;
   }
 
   public newIdentifyEvent(user: User): JournifyEvent {
-    return this.callbacks?.newIdentifyEvent(user);
-  }
-
-  public setCallbacks(callbacks: EventFactoryCallbacks) {
-    this.callbacks = callbacks;
+    return this.funcs?.newIdentifyEvent(user);
   }
 }
 
-export interface EventFactoryCallbacks {
+export interface EventFactoryFuncs {
   newIdentifyEvent?: jest.Func;
 }

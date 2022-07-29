@@ -42,21 +42,17 @@ export class ContextMock implements Context {
 }
 
 export class ContextFactoryMock implements ContextFactory {
-  private callbacks: ContextFactoryCallbacks;
+  public funcs: ContextFactoryFuncs;
 
-  public constructor(callbacks: ContextFactoryCallbacks) {
-    this.callbacks = callbacks;
+  public constructor(funcs: ContextFactoryFuncs) {
+    this.funcs = funcs;
   }
 
   public newContext(event: JournifyEvent, id?: string): Context {
-    return this.callbacks?.newContext(event, id);
-  }
-
-  public setCallbacks(callbacks: ContextFactoryCallbacks) {
-    this.callbacks = callbacks;
+    return this.funcs?.newContext(event, id);
   }
 }
 
-export interface ContextFactoryCallbacks {
+export interface ContextFactoryFuncs {
   newContext?: jest.Func;
 }

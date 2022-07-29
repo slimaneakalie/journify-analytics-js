@@ -1,5 +1,5 @@
 import { EventFactoryImpl } from "../eventFactory";
-import { UserMock, UserMockCallbacks } from "../../../test/mocks/user";
+import { UserMock, UserMockFuncs } from "../../../test/mocks/user";
 import { User } from "../../domain/user";
 import { Traits } from "../../domain/traits";
 import { JournifyEvent } from "../../domain/event";

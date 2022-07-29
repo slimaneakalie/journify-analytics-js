@@ -5,22 +5,22 @@ export class UserMock implements User {
   private readonly anonymousId: string;
   private readonly userId: string;
   private readonly traits: Traits;
-  private callbacks: UserMockCallbacks;
+  public funcs: UserMockFuncs;
 
   public constructor(
     userId: string,
     anonymousId: string,
     traits: Traits,
-    callbacks: UserMockCallbacks
+    funcs: UserMockFuncs
   ) {
     this.userId = userId;
     this.anonymousId = anonymousId;
     this.traits = traits;
-    this.callbacks = callbacks;
+    this.funcs = funcs;
   }
 
   public identify(userId?: string, traits: Traits = {}) {
-    this.callbacks?.identify(userId, traits);
+    this.funcs?.identify(userId, traits);
   }
 
   public getUserId(): string | null {
@@ -36,17 +36,13 @@ export class UserMock implements User {
   }
 }
 
-export interface UserMockCallbacks {
+export interface UserMockFuncs {
   identify?: jest.Func;
 }
 
 export class UserFactoryMock implements UserFactory {
-  private mockedUser: User;
+  public mockedUser: User;
   public constructor(mockedUser: User) {
-    this.mockedUser = mockedUser;
-  }
-
-  public setMockedUser(mockedUser: User) {
     this.mockedUser = mockedUser;
   }
 

@@ -1,11 +1,11 @@
-import { Emitter } from "../emitter";
+import { Emitter, EmitterImpl } from "../emitter";
 import { createAndBindCallbacks } from "../../../test/helpers/emitter";
 
-describe("Emitter class", () => {
+describe("EmitterImpl class", () => {
   describe("on method", () => {
     it("Should call multiple callbacks every time an event is emitted", function () {
       const NUMBER_OF_CALLBACKS = 5;
-      const emitter = new Emitter();
+      const emitter = new EmitterImpl();
       const event_name = "event-name-example-1";
       const callbacks = createAndBindCallbacks(
         emitter,
@@ -33,7 +33,7 @@ describe("Emitter class", () => {
 
     it("Should not call any callback when an non-related event is emitted", function () {
       const NUMBER_OF_CALLBACKS = 6;
-      const emitter = new Emitter();
+      const emitter = new EmitterImpl();
       const event_name = "event-name-example-2";
       const callbacks = createAndBindCallbacks(
         emitter,
@@ -52,7 +52,7 @@ describe("Emitter class", () => {
   describe("once method", () => {
     it("Should call multiple callbacks once when the targeted event is emitted for the first time", function () {
       const NUMBER_OF_CALLBACKS = 4;
-      const emitter = new Emitter();
+      const emitter = new EmitterImpl();
       const callbacks: jest.Func[] = [];
       const event_name = "event-name-example-3";
 
@@ -79,7 +79,7 @@ describe("Emitter class", () => {
   describe("off method", () => {
     it("Should stop calling the callbacks when an event is emitted once the off method is invoked", function () {
       const NUMBER_OF_CALLBACKS = 8;
-      const emitter = new Emitter();
+      const emitter = new EmitterImpl();
       const event_name = "event-name-example-4";
       const callbacks = createAndBindCallbacks(
         emitter,
@@ -103,7 +103,7 @@ describe("Emitter class", () => {
 
     it("Should stop calling one callback when an event is emitted once the off method is invoked", function () {
       const NUMBER_OF_CALLBACKS = 8;
-      const emitter = new Emitter();
+      const emitter = new EmitterImpl();
       const event_name = "event-name-example-6";
       const callbacks = createAndBindCallbacks(
         emitter,

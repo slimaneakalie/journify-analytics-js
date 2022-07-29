@@ -3,7 +3,7 @@ import {
   ON_OPERATION_DELAY_FINISH,
   OperationsPriorityQueue,
 } from "../lib/priorityQueue";
-import { Emitter } from "./emitter";
+import { EmitterImpl } from "./emitter";
 import { isOffline } from "./utils";
 import { JPlugin } from "./plugins/plugin";
 
@@ -11,7 +11,7 @@ export interface EventQueue {
   deliver(ctx: Context): Promise<Context>;
 }
 
-export class EventQueueImpl extends Emitter implements EventQueue {
+export class EventQueueImpl extends EmitterImpl implements EventQueue {
   private pQueue: OperationsPriorityQueue<Context>;
   private readonly plugins: JPlugin[];
   private flushing = false;

@@ -8,21 +8,21 @@ import { EventQueue } from "../../transport/queue";
 import {
   UserFactoryMock,
   UserMock,
-  UserMockCallbacks,
+  UserMockFuncs,
 } from "../../../test/mocks/user";
 import { Traits } from "../../domain/traits";
 import {
-  EventFactoryCallbacks,
+  EventFactoryFuncs,
   EventFactoryMock,
 } from "../../../test/mocks/eventFactory";
 import { JournifyEvent } from "../../domain/event";
 import {
   EventQueueMock,
-  EventQueueMockCallbacks,
+  EventQueueMockFuncs,
 } from "../../../test/mocks/eventQueue";
 import { Context, ContextFactory } from "../../transport/context";
 import {
-  ContextFactoryCallbacks,
+  ContextFactoryFuncs,
   ContextFactoryMock,
   ContextMock,
 } from "../../../test/mocks/context";
@@ -43,7 +43,7 @@ describe("Analytics class", () => {
         location: "France",
       };
 
-      const userMockCallbacks: UserMockCallbacks = {
+      const userMockFuncs: UserMockFuncs = {
         identify: jest.fn(),
       };
 
@@ -51,7 +51,7 @@ describe("Analytics class", () => {
         initialUserId,
         initialAnonymousId,
         initialTraits,
-        userMockCallbacks
+        userMockFuncs
       );
       const userFactory: UserFactory = new UserFactoryMock(user);
 
@@ -64,25 +64,25 @@ describe("Analytics class", () => {
         timestamp: new Date(),
       };
 
-      const eventFactoryCallbacks: EventFactoryCallbacks = {
+      const eventFactoryFuncs: EventFactoryFuncs = {
         newIdentifyEvent: jest.fn(() => event),
       };
-      const eventFactory = new EventFactoryMock(eventFactoryCallbacks);
+      const eventFactory = new EventFactoryMock(eventFactoryFuncs);
 
       const ctx: Context = new ContextMock("context-id", event);
-      const contextFactoryCallbacks: ContextFactoryCallbacks = {
+      const contextFactoryFuncs: ContextFactoryFuncs = {
         newContext: jest.fn((eventParam: JournifyEvent, id?: string) => {
           expect(eventParam).toEqual(event);
           expect(id).toBeUndefined();
           return ctx;
         }),
       };
-      const contextFactory = new ContextFactoryMock(contextFactoryCallbacks);
+      const contextFactory = new ContextFactoryMock(contextFactoryFuncs);
 
-      const eventQueueCallbacks: EventQueueMockCallbacks = {
+      const eventQueueFuncs: EventQueueMockFuncs = {
         deliver: jest.fn(() => Promise.resolve(ctx)),
       };
-      const eventQueue: EventQueue = new EventQueueMock(eventQueueCallbacks);
+      const eventQueue: EventQueue = new EventQueueMock(eventQueueFuncs);
 
       const deps: AnalyticsDependencies = {
         userFactory,
@@ -102,16 +102,16 @@ describe("Analytics class", () => {
         traitsByClient
       );
 
-      expect(userMockCallbacks.identify).toHaveBeenCalledTimes(1);
-      expect(userMockCallbacks.identify).toHaveBeenCalledWith(
+      expect(userMockFuncs.identify).toHaveBeenCalledTimes(1);
+      expect(userMockFuncs.identify).toHaveBeenCalledWith(
         userIdByClient,
         traitsByClient
       );
-      expect(eventFactoryCallbacks.newIdentifyEvent).toHaveBeenCalledTimes(1);
-      expect(eventFactoryCallbacks.newIdentifyEvent).toHaveBeenCalledWith(user);
-      expect(contextFactoryCallbacks.newContext).toHaveBeenCalledTimes(1);
-      expect(eventQueueCallbacks.deliver).toHaveBeenCalledTimes(1);
-      expect(eventQueueCallbacks.deliver).toHaveBeenCalledWith(ctx);
+      expect(eventFactoryFuncs.newIdentifyEvent).toHaveBeenCalledTimes(1);
+      expect(eventFactoryFuncs.newIdentifyEvent).toHaveBeenCalledWith(user);
+      expect(contextFactoryFuncs.newContext).toHaveBeenCalledTimes(1);
+      expect(eventQueueFuncs.deliver).toHaveBeenCalledTimes(1);
+      expect(eventQueueFuncs.deliver).toHaveBeenCalledWith(ctx);
       expect(deliveredCtx).toEqual(ctx);
     });
   });

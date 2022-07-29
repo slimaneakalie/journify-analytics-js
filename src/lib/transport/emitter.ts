@@ -1,4 +1,11 @@
-export class Emitter {
+export interface Emitter {
+  on(event: string, callback: Function): Emitter;
+  once(event: string, fn: Function): Emitter;
+  off(event: string, callback: Function): Emitter;
+  emit(event: string, ...args: unknown[]): Emitter;
+}
+
+export class EmitterImpl implements Emitter {
   private callbacks: Record<string, Function[]> = {};
 
   public on(event: string, callback: Function): this {

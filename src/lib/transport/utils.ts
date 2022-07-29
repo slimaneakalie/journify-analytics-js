@@ -6,15 +6,7 @@ export function isOffline(): boolean {
 }
 
 export function isOnline(): boolean {
-  if (isBrowser()) {
-    return window.navigator.onLine;
-  }
-
-  return true;
-}
-
-export function isBrowser(): boolean {
-  return typeof window !== "undefined";
+  return navigator.onLine;
 }
 
 export function encodeBase64(str: string): string {

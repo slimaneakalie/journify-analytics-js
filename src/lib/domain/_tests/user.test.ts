@@ -55,7 +55,7 @@ describe("User interface", () => {
       const user = factory.newUser();
       const newUserId = "138738937";
       const newTraits = {
-        email: "user@mail.com",
+        email: "user-2@mail.com",
         clicks: 337,
         location: "Morocco",
         unique: uuid(),
@@ -70,7 +70,36 @@ describe("User interface", () => {
       assertValueOnStores(stores, "journifyio_user_traits", newTraits);
     });
 
-    // it("Should merge the traits with the previous ones from the stores", () => {});
+    it("Should merge the traits with the previous ones from the stores", () => {
+      const stores = createStoresForTest();
+      const { local, cookies, memory } = stores;
+
+      const oldTraits = { email: "user-10@gmail.com" };
+      local.set("journifyio_user_traits", oldTraits);
+
+      const factory = new UserFactoryImpl(local, cookies, memory);
+      const user = factory.newUser();
+
+      const newTraits = {
+        clicks: 337,
+        location: "Morocco",
+        unique: uuid(),
+      };
+      user.identify(null, newTraits);
+
+      const expectedStoredTraits = {
+        email: "user-10@gmail.com",
+        clicks: 337,
+        location: "Morocco",
+        unique: uuid(),
+      };
+
+      assertValueOnStores(
+        stores,
+        "journifyio_user_traits",
+        expectedStoredTraits
+      );
+    });
   });
 
   /*describe("getUserId method", () => {

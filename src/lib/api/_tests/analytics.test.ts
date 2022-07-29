@@ -28,7 +28,7 @@ import {
 } from "../../../test/mocks/context";
 
 describe("Analytics class", () => {
-  describe("identify function", () => {
+  describe("identify method", () => {
     it("Should dispatch identify event with the right user data", async () => {
       const initialUserId = "initial-user-id-example";
       const initialAnonymousId = "initial-anonymous-id-example";

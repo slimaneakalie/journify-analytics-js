@@ -25,7 +25,7 @@ export class Analytics extends Emitter {
   public constructor(settings: AnalyticsSettings, deps: AnalyticsDependencies) {
     super();
     this.settings = settings;
-    this.user = deps.userFactory.getUserFromBrowser();
+    this.user = deps.userFactory.newUser();
     this.eventFactory = deps.eventFactory;
     this.contextFactory = deps.contextFactory;
     this.eventQueue = deps.eventQueue;

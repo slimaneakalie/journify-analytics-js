@@ -13,7 +13,7 @@ export interface User {
 }
 
 export interface UserFactory {
-  getUserFromBrowser(): User;
+  newUser(): User;
 }
 
 export class UserFactoryImpl implements UserFactory {
@@ -31,7 +31,7 @@ export class UserFactoryImpl implements UserFactory {
     this.memoryStore = memoryStore;
   }
 
-  public getUserFromBrowser(): User {
+  public newUser(): User {
     return new UserImpl(this.localStorage, this.cookiesStore, this.memoryStore);
   }
 }
@@ -52,7 +52,7 @@ class UserImpl implements User {
     this.localStorage = localStorage;
     this.cookiesStore = cookiesStore;
     this.memoryStore = memoryStore;
-    this.userId = this.getFromStores(USER_ID_PERSISTENCE_KEY);
+    this.initUserId();
     this.initAnonymousId();
     this.initTraits();
   }
@@ -82,6 +82,13 @@ class UserImpl implements User {
     return this.traits;
   }
 
+  private initUserId() {
+    this.userId = this.getFromStores(USER_ID_PERSISTENCE_KEY);
+    if (this.userId) {
+      this.setOnStores(USER_ID_PERSISTENCE_KEY, this.userId);
+    }
+  }
+
   private initAnonymousId() {
     this.anonymousId = this.getFromStores(ANONYMOUS_ID_PERSISTENCE_KEY);
     if (!this.anonymousId) {
@@ -107,8 +114,10 @@ class UserImpl implements User {
   }
 
   private initTraits() {
-    this.traits = this.getFromStores(USER_TRAITS_PERSISTENCE_KEY);
-    if (!this.traits) {
+    const traits = this.getFromStores(USER_TRAITS_PERSISTENCE_KEY);
+    if (traits) {
+      this.setTraits(traits as Traits);
+    } else {
       this.setTraits({});
     }
   }

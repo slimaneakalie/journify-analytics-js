@@ -50,7 +50,7 @@ export class UserFactoryMock implements UserFactory {
     this.mockedUser = mockedUser;
   }
 
-  public getUserFromBrowser(): User {
+  public newUser(): User {
     return this.mockedUser;
   }
 }

@@ -2,7 +2,7 @@ import { v4 as uuid } from "@lukeed/uuid";
 import md5 from "spark-md5";
 
 import { User } from "../domain/user";
-import { JournifyEvent } from "./event";
+import { JournifyEvent } from "../domain/event";
 import { getLibVersion } from "./utils";
 
 export interface EventFactory {

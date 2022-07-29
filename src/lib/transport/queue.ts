@@ -5,7 +5,7 @@ import {
 } from "../lib/priorityQueue";
 import { Emitter } from "./emitter";
 import { isOffline } from "./utils";
-import { JournifyPlugin } from "./plugins/plugin";
+import { JPlugin } from "./plugins/plugin";
 
 export interface EventQueue {
   deliver(ctx: Context): Promise<Context>;
@@ -13,14 +13,15 @@ export interface EventQueue {
 
 export class EventQueueImpl extends Emitter implements EventQueue {
   private pQueue: OperationsPriorityQueue<Context>;
-  private readonly plugins: JournifyPlugin[];
+  private readonly plugins: JPlugin[];
   private flushing = false;
 
-  public constructor(plugins: JournifyPlugin[], options?: EventQueueOptions) {
+  public constructor(
+    plugins: JPlugin[],
+    pQueue: OperationsPriorityQueue<Context>
+  ) {
     super();
-    this.pQueue = new OperationsPriorityQueue<Context>(
-      options?.maxAttempts ?? MAX_ATTEMPTS_DEFAULT
-    );
+    this.pQueue = pQueue;
 
     this.pQueue.on(ON_OPERATION_DELAY_FINISH, async () => {
       await this.flush();
@@ -102,7 +103,7 @@ export class EventQueueImpl extends Emitter implements EventQueue {
 
   private async runPlugin(
     ctxToDeliver: Context,
-    plugin: JournifyPlugin
+    plugin: JPlugin
   ): Promise<Context> {
     const event = ctxToDeliver.getEvent();
     if (!plugin || !plugin[event.type]) {
@@ -122,9 +123,4 @@ export class EventQueueImpl extends Emitter implements EventQueue {
   }
 }
 
-export interface EventQueueOptions {
-  maxAttempts?: number;
-}
-
 const FLUSH_EVENT_NAME = "flush";
-const MAX_ATTEMPTS_DEFAULT = 5;

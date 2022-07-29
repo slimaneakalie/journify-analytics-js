@@ -3,7 +3,7 @@ import { Emitter } from "../transport/emitter";
 import { Traits } from "../domain/traits";
 import { User, UserFactory } from "../domain/user";
 import { EventFactory } from "../transport/eventFactory";
-import { JournifyEvent } from "../transport/event";
+import { JournifyEvent } from "../domain/event";
 import { EventQueue } from "../transport/queue";
 
 const IDENTIFY_EVENT_NAME = "identify";

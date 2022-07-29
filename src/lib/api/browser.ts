@@ -7,12 +7,16 @@ import { LocalStorage } from "../store/localStorage";
 import { NullStore } from "../store/nullStore";
 import { Cookies } from "../store/cookies";
 import { MemoryStore } from "../store/memoryStore";
-import { JournifyPlugin } from "../transport/plugins/plugin";
+import { JPlugin } from "../transport/plugins/plugin";
 import { JournifyioPlugin } from "../transport/plugins/journifyio";
 import { EventQueueImpl } from "../transport/queue";
 import { UserFactoryImpl } from "../domain/user";
 import { EventFactoryImpl } from "../transport/eventFactory";
-import { ContextFactoryImpl } from "../transport/context";
+import { Context, ContextFactoryImpl } from "../transport/context";
+import {
+  OperationsPriorityQueue,
+  OperationsPriorityQueueImpl,
+} from "../lib/priorityQueue";
 
 export class AnalyticsBrowser {
   public static load(settings: AnalyticsSettings): Analytics {
@@ -26,16 +30,20 @@ export class AnalyticsBrowser {
 
     const memoryStore = new MemoryStore();
 
-    const plugins: JournifyPlugin[] = [new JournifyioPlugin(settings)];
-
+    const plugins: JPlugin[] = [new JournifyioPlugin(settings)];
+    const pQueue = new OperationsPriorityQueueImpl<Context>(
+      DEFAULT_MAX_QUEUE_ATTEMPTS
+    );
     const deps: AnalyticsDependencies = {
       userFactory: new UserFactoryImpl(localStorage, cookiesStore, memoryStore),
       eventFactory: new EventFactoryImpl(),
       contextFactory: new ContextFactoryImpl(),
-      eventQueue: new EventQueueImpl(plugins),
+      eventQueue: new EventQueueImpl(plugins, pQueue),
     };
 
     const analytics = new Analytics(settings, deps);
     return analytics;
   }
 }
+
+const DEFAULT_MAX_QUEUE_ATTEMPTS = 5;

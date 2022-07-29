@@ -15,7 +15,7 @@ import {
   EventFactoryCallbacks,
   EventFactoryMock,
 } from "../../../test/mocks/eventFactory";
-import { JournifyEvent } from "../../transport/event";
+import { JournifyEvent } from "../../domain/event";
 import {
   EventQueueMock,
   EventQueueMockCallbacks,

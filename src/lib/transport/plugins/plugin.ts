@@ -1,5 +1,5 @@
 import { Context } from "../context";
 
-export interface JournifyPlugin {
+export interface JPlugin {
   identify?: (ctx: Context) => Promise<Context> | Context;
 }

@@ -1,5 +1,5 @@
 import { v4 as uuid } from "@lukeed/uuid";
-import { JournifyEvent } from "./event";
+import { JournifyEvent } from "../domain/event";
 import { WithId } from "../lib/priorityQueue";
 
 export interface Context extends WithId {

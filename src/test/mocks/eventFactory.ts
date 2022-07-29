@@ -1,5 +1,5 @@
 import { EventFactory } from "../../lib/transport/eventFactory";
-import { JournifyEvent } from "../../lib/transport/event";
+import { JournifyEvent } from "../../lib/domain/event";
 import { User } from "../../lib/domain/user";
 
 export class EventFactoryMock implements EventFactory {

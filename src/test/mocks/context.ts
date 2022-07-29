@@ -1,4 +1,4 @@
-import { JournifyEvent } from "../../lib/transport/event";
+import { JournifyEvent } from "../../lib/domain/event";
 import {
   Context,
   ContextFactory,

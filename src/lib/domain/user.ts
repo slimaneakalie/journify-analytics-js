@@ -86,8 +86,9 @@ class UserImpl implements User {
     this.anonymousId = this.getFromStores(ANONYMOUS_ID_PERSISTENCE_KEY);
     if (!this.anonymousId) {
       this.anonymousId = uuid();
-      this.setOnStores(ANONYMOUS_ID_PERSISTENCE_KEY, this.anonymousId);
     }
+
+    this.setOnStores(ANONYMOUS_ID_PERSISTENCE_KEY, this.anonymousId);
   }
 
   private getFromStores<T>(key: string): T | null {

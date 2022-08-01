@@ -23,9 +23,9 @@
     "version-update": "sh scripts/update-version-var.sh",
     "build": "npm run clean && npm run version-update && tsc && tsc -m es6 --outDir dist/lib/es6 && webpack",
     "release": "npm run version-update && npm run test && npm run build && npm publish --access=public",
-    "patch-version": "npm version patch && npm run version-update && git push",
-    "minor-version": "npm version minor && npm run version-update && git push",
-    "major-version": "npm version major && npm run version-update && git push"
+    "patch-version": "npm version patch && npm run version-update && git add . && git commit -m 'update version' && git push",
+    "minor-version": "npm version minor && npm run version-update && git add . && git commit -m 'update version' && git push",
+    "major-version": "npm version major && npm run version-update && git add . && git commit -m 'update version' && git push"
   },
   "dependencies": {
     "@lukeed/uuid": "^2.0.0",

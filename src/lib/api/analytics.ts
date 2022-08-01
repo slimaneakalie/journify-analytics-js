@@ -46,7 +46,11 @@ export class Analytics extends EmitterImpl {
   }
 
   public async track(eventName: string, properties?: object): Promise<Context> {
-    if (!eventName || !this.isString(eventName)) {
+    if (
+      !eventName ||
+      typeof eventName !== "string" ||
+      eventName.trim().length === 0
+    ) {
       throw new Error("Event name is missing");
     }
 
@@ -60,10 +64,6 @@ export class Analytics extends EmitterImpl {
     this.emit(TRACK_EVENT_NAME, ctxEvent.event, ctxEvent.properties);
 
     return ctx;
-  }
-
-  private isString(obj: unknown): obj is string {
-    return typeof obj === "string";
   }
 
   private async dispatchEvent(event: JournifyEvent): Promise<Context> {

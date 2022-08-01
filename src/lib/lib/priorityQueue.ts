@@ -73,7 +73,7 @@ export class OperationsPriorityQueueImpl<T extends WithId>
   }
 
   public isEmpty(): boolean {
-    return this.nowOperations.length == 0;
+    return this.nowOperations.length === 0;
   }
 
   public pop(): T | undefined {

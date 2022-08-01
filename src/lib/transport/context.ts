@@ -1,12 +1,12 @@
 import { v4 as uuid } from "@lukeed/uuid";
-import { JournifyEvent } from "./event";
+import { JournifyEvent } from "../domain/event";
 import { WithId } from "../lib/priorityQueue";
 
 export interface Context extends WithId {
   getEvent(): JournifyEvent;
   isSame(other: Context): boolean;
   setFailedDelivery(failedDelivery: ContextFailedDelivery);
-  getFailedDelivery(): ContextFailedDelivery;
+  getFailedDelivery(): ContextFailedDelivery | null;
 }
 
 export interface ContextFactory {
@@ -45,8 +45,8 @@ class ContextImpl implements Context {
     this.failedDelivery = failedDelivery;
   }
 
-  public getFailedDelivery(): ContextFailedDelivery {
-    return this.failedDelivery;
+  public getFailedDelivery(): ContextFailedDelivery | null {
+    return this.failedDelivery ?? null;
   }
 }
 

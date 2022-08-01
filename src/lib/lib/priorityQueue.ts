@@ -1,10 +1,20 @@
-import { Emitter } from "../transport/emitter";
+import { Emitter, EmitterImpl } from "../transport/emitter";
 
 export interface WithId {
   getId(): string;
 }
 
-export class OperationsPriorityQueue<T extends WithId> extends Emitter {
+export interface OperationsPriorityQueue<T extends WithId> extends Emitter {
+  push(...operations: T[]): boolean[];
+  pushWithBackoff(operation: T): boolean;
+  isEmpty(): boolean;
+  pop(): T | undefined;
+}
+
+export class OperationsPriorityQueueImpl<T extends WithId>
+  extends EmitterImpl
+  implements OperationsPriorityQueue<T>
+{
   private delayedOperations: T[];
   private nowOperations: T[];
   private readonly attempts: Record<string, number>;
@@ -48,7 +58,7 @@ export class OperationsPriorityQueue<T extends WithId> extends Emitter {
 
     this.delayedOperations.push(operation);
 
-    const delayMs = OperationsPriorityQueue.backoffDelayInMs(attempts - 1);
+    const delayMs = OperationsPriorityQueueImpl.backoffDelayInMs(attempts - 1);
 
     setTimeout(() => {
       this.nowOperations.push(operation);

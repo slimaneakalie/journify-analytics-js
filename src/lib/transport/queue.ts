@@ -3,30 +3,29 @@ import {
   ON_OPERATION_DELAY_FINISH,
   OperationsPriorityQueue,
 } from "../lib/priorityQueue";
-import { Emitter } from "./emitter";
+import { EmitterImpl } from "./emitter";
 import { isOffline } from "./utils";
-import { JournifyPlugin } from "./plugins/plugin";
+import { JPlugin } from "./plugins/plugin";
 
 export interface EventQueue {
   deliver(ctx: Context): Promise<Context>;
 }
 
-export class EventQueueImpl extends Emitter implements EventQueue {
+export class EventQueueImpl extends EmitterImpl implements EventQueue {
   private pQueue: OperationsPriorityQueue<Context>;
-  private readonly plugins: JournifyPlugin[];
+  private readonly plugins: JPlugin[];
   private flushing = false;
 
-  public constructor(plugins: JournifyPlugin[], options?: EventQueueOptions) {
+  public constructor(
+    plugins: JPlugin[],
+    pQueue: OperationsPriorityQueue<Context>
+  ) {
     super();
-    this.pQueue = new OperationsPriorityQueue<Context>(
-      options?.maxAttempts ?? MAX_ATTEMPTS_DEFAULT
-    );
-
+    this.plugins = plugins;
+    this.pQueue = pQueue;
     this.pQueue.on(ON_OPERATION_DELAY_FINISH, async () => {
       await this.flush();
     });
-
-    this.plugins = plugins;
   }
 
   public async deliver(ctx: Context): Promise<Context> {
@@ -82,12 +81,11 @@ export class EventQueueImpl extends Emitter implements EventQueue {
     try {
       const deliveredCtx = await this.runPlugins(ctxToDeliver);
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
+      this.flushing = false;
     } catch (err: any) {
       this.flushing = false;
       this.handleFlushError(ctxToDeliver, err);
     }
-
-    this.flushing = false;
   }
 
   private async runPlugins(ctxToDeliver: Context): Promise<Context> {
@@ -102,7 +100,7 @@ export class EventQueueImpl extends Emitter implements EventQueue {
 
   private async runPlugin(
     ctxToDeliver: Context,
-    plugin: JournifyPlugin
+    plugin: JPlugin
   ): Promise<Context> {
     const event = ctxToDeliver.getEvent();
     if (!plugin || !plugin[event.type]) {
@@ -122,9 +120,4 @@ export class EventQueueImpl extends Emitter implements EventQueue {
   }
 }
 
-export interface EventQueueOptions {
-  maxAttempts?: number;
-}
-
 const FLUSH_EVENT_NAME = "flush";
-const MAX_ATTEMPTS_DEFAULT = 5;

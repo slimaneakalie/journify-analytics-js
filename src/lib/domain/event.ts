@@ -1,4 +1,4 @@
-import { Traits } from "../domain/traits";
+import { Traits } from "./traits";
 
 export interface JournifyEvent {
   messageId?: string;

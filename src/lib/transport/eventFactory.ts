@@ -2,8 +2,8 @@ import { v4 as uuid } from "@lukeed/uuid";
 import md5 from "spark-md5";
 
 import { User } from "../domain/user";
-import { JournifyEvent } from "./event";
-import { getLibVersion } from "./utils";
+import { JournifyEvent } from "../domain/event";
+import { LIB_VERSION } from "../generated/libVersion";
 
 export interface EventFactory {
   newIdentifyEvent(user: User): JournifyEvent;
@@ -23,15 +23,17 @@ export class EventFactoryImpl implements EventFactory {
 
   private normalizeEvent(baseEvent: JournifyEvent): JournifyEvent {
     const ctx = baseEvent?.context || {};
-    ctx.userAgent = navigator.userAgent;
+    ctx.userAgent = navigator?.userAgent;
     if (!ctx.locale) {
-      ctx.locale = navigator.language || navigator["userLanguage"];
+      ctx.locale = navigator
+        ? navigator.language || navigator["userLanguage"]
+        : undefined;
     }
 
     if (!ctx.library) {
       ctx.library = {
         name: "@journifyio/analytics.js",
-        version: getLibVersion(),
+        version: LIB_VERSION,
       };
     }
 

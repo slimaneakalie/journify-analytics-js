@@ -8,27 +8,27 @@ import { EventQueue } from "../../transport/queue";
 import {
   UserFactoryMock,
   UserMock,
-  UserMockCallbacks,
+  UserMockFuncs,
 } from "../../../test/mocks/user";
 import { Traits } from "../../domain/traits";
 import {
-  EventFactoryCallbacks,
+  EventFactoryFuncs,
   EventFactoryMock,
 } from "../../../test/mocks/eventFactory";
-import { JournifyEvent } from "../../transport/event";
+import { JournifyEvent } from "../../domain/event";
 import {
   EventQueueMock,
-  EventQueueMockCallbacks,
+  EventQueueMockFuncs,
 } from "../../../test/mocks/eventQueue";
 import { Context, ContextFactory } from "../../transport/context";
 import {
-  ContextFactoryCallbacks,
+  ContextFactoryFuncs,
   ContextFactoryMock,
   ContextMock,
 } from "../../../test/mocks/context";
 
 describe("Analytics class", () => {
-  describe("identify function", () => {
+  describe("identify method", () => {
     it("Should dispatch identify event with the right user data", async () => {
       const initialUserId = "initial-user-id-example";
       const initialAnonymousId = "initial-anonymous-id-example";
@@ -42,18 +42,16 @@ describe("Analytics class", () => {
         email: "example-15267@maily.net",
         location: "France",
       };
-      const userMockCallbacks: UserMockCallbacks = {
-        identify: (userId?: string, traits: Traits = {}) => {
-          expect(userId).toEqual(userIdByClient);
-          expect(traits).toEqual(traitsByClient);
-        },
+
+      const userMockFuncs: UserMockFuncs = {
+        identify: jest.fn(),
       };
 
       const user: User = new UserMock(
         initialUserId,
         initialAnonymousId,
         initialTraits,
-        userMockCallbacks
+        userMockFuncs
       );
       const userFactory: UserFactory = new UserFactoryMock(user);
 
@@ -65,31 +63,26 @@ describe("Analytics class", () => {
         traits: initialTraits,
         timestamp: new Date(),
       };
-      const eventFactoryCallbacks: EventFactoryCallbacks = {
-        newIdentifyEvent: (userParam: User): JournifyEvent => {
-          expect(userParam).toEqual(user);
-          return event;
-        },
+
+      const eventFactoryFuncs: EventFactoryFuncs = {
+        newIdentifyEvent: jest.fn(() => event),
       };
-      const eventFactory = new EventFactoryMock(eventFactoryCallbacks);
+      const eventFactory = new EventFactoryMock(eventFactoryFuncs);
 
       const ctx: Context = new ContextMock("context-id", event);
-      const contextFactoryCallbacks: ContextFactoryCallbacks = {
-        newContext: (eventParam: JournifyEvent, id?: string): Context => {
+      const contextFactoryFuncs: ContextFactoryFuncs = {
+        newContext: jest.fn((eventParam: JournifyEvent, id?: string) => {
           expect(eventParam).toEqual(event);
           expect(id).toBeUndefined();
           return ctx;
-        },
+        }),
       };
-      const contextFactory = new ContextFactoryMock(contextFactoryCallbacks);
+      const contextFactory = new ContextFactoryMock(contextFactoryFuncs);
 
-      const eventQueueCallbacks: EventQueueMockCallbacks = {
-        deliver: (ctxParam: Context): Promise<Context> => {
-          expect(ctxParam).toEqual(ctx);
-          return Promise.resolve(ctx);
-        },
+      const eventQueueFuncs: EventQueueMockFuncs = {
+        deliver: jest.fn(() => Promise.resolve(ctx)),
       };
-      const eventQueue: EventQueue = new EventQueueMock(eventQueueCallbacks);
+      const eventQueue: EventQueue = new EventQueueMock(eventQueueFuncs);
 
       const deps: AnalyticsDependencies = {
         userFactory,
@@ -109,6 +102,16 @@ describe("Analytics class", () => {
         traitsByClient
       );
 
+      expect(userMockFuncs.identify).toHaveBeenCalledTimes(1);
+      expect(userMockFuncs.identify).toHaveBeenCalledWith(
+        userIdByClient,
+        traitsByClient
+      );
+      expect(eventFactoryFuncs.newIdentifyEvent).toHaveBeenCalledTimes(1);
+      expect(eventFactoryFuncs.newIdentifyEvent).toHaveBeenCalledWith(user);
+      expect(contextFactoryFuncs.newContext).toHaveBeenCalledTimes(1);
+      expect(eventQueueFuncs.deliver).toHaveBeenCalledTimes(1);
+      expect(eventQueueFuncs.deliver).toHaveBeenCalledWith(ctx);
       expect(deliveredCtx).toEqual(ctx);
     });
   });

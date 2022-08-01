@@ -1,9 +1,9 @@
 import { Context, ContextFactory } from "../transport/context";
-import { Emitter } from "../transport/emitter";
+import { EmitterImpl } from "../transport/emitter";
 import { Traits } from "../domain/traits";
 import { User, UserFactory } from "../domain/user";
 import { EventFactory } from "../transport/eventFactory";
-import { JournifyEvent } from "../transport/event";
+import { JournifyEvent } from "../domain/event";
 import { EventQueue } from "../transport/queue";
 
 const IDENTIFY_EVENT_NAME = "identify";
@@ -15,7 +15,7 @@ export interface AnalyticsDependencies {
   eventQueue: EventQueue;
 }
 
-export class Analytics extends Emitter {
+export class Analytics extends EmitterImpl {
   private readonly settings: AnalyticsSettings;
   private readonly user: User;
   private readonly eventFactory: EventFactory;
@@ -25,7 +25,7 @@ export class Analytics extends Emitter {
   public constructor(settings: AnalyticsSettings, deps: AnalyticsDependencies) {
     super();
     this.settings = settings;
-    this.user = deps.userFactory.getUserFromBrowser();
+    this.user = deps.userFactory.newUser();
     this.eventFactory = deps.eventFactory;
     this.contextFactory = deps.contextFactory;
     this.eventQueue = deps.eventQueue;

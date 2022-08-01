@@ -1,9 +1,9 @@
-import { JournifyPlugin } from "./plugin";
+import { JPlugin } from "./plugin";
 import { Context } from "../context";
 import { AnalyticsSettings } from "../../api/analytics";
 import { encodeBase64 } from "../utils";
 
-export class JournifyioPlugin implements JournifyPlugin {
+export class JournifyioPlugin implements JPlugin {
   private analyticsSettings: AnalyticsSettings;
 
   public constructor(analyticsSettings: AnalyticsSettings) {

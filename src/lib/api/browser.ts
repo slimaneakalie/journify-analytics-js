@@ -13,10 +13,7 @@ import { EventQueueImpl } from "../transport/queue";
 import { UserFactoryImpl } from "../domain/user";
 import { EventFactoryImpl } from "../transport/eventFactory";
 import { Context, ContextFactoryImpl } from "../transport/context";
-import {
-  OperationsPriorityQueue,
-  OperationsPriorityQueueImpl,
-} from "../lib/priorityQueue";
+import { OperationsPriorityQueueImpl } from "../lib/priorityQueue";
 
 export class AnalyticsBrowser {
   public static load(settings: AnalyticsSettings): Analytics {

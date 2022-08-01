@@ -21,13 +21,11 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     pQueue: OperationsPriorityQueue<Context>
   ) {
     super();
+    this.plugins = plugins;
     this.pQueue = pQueue;
-
     this.pQueue.on(ON_OPERATION_DELAY_FINISH, async () => {
       await this.flush();
     });
-
-    this.plugins = plugins;
   }
 
   public async deliver(ctx: Context): Promise<Context> {
@@ -83,12 +81,11 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     try {
       const deliveredCtx = await this.runPlugins(ctxToDeliver);
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
+      this.flushing = false;
     } catch (err: any) {
       this.flushing = false;
       this.handleFlushError(ctxToDeliver, err);
     }
-
-    this.flushing = false;
   }
 
   private async runPlugins(ctxToDeliver: Context): Promise<Context> {

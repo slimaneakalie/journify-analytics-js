@@ -8,7 +8,7 @@ export class Cookies implements Store {
   private attributes: JsCookie.CookieAttributes;
 
   public static isAvailable(): boolean {
-    let cookieEnabled = window.navigator.cookieEnabled;
+    let cookieEnabled = window?.navigator?.cookieEnabled;
 
     if (!cookieEnabled) {
       const testKey = "journify.io-test-cookie-key";

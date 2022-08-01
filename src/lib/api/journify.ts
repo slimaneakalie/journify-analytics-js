@@ -15,7 +15,7 @@ import { EventFactoryImpl } from "../transport/eventFactory";
 import { Context, ContextFactoryImpl } from "../transport/context";
 import { OperationsPriorityQueueImpl } from "../lib/priorityQueue";
 
-export class AnalyticsBrowser {
+export class Journify {
   public static load(settings: AnalyticsSettings): Analytics {
     const localStorage = LocalStorage.isAvailable()
       ? new LocalStorage()

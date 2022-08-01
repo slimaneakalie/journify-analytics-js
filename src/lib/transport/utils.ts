@@ -15,7 +15,7 @@ export function encodeBase64(str: string): string {
 export function getCanonicalPath(): string {
   const canon = canonical();
   if (!canon) {
-    return window?.location.pathname || location.pathname;
+    return location?.pathname;
   }
 
   const a = document.createElement("a");
@@ -30,7 +30,7 @@ export function getCanonicalUrl(): string {
     return canon.includes("?") ? canon : `${canon}${location?.search}`;
   }
 
-  const url = window?.location.href;
+  const url = location?.href;
   const i = url.indexOf("#");
   return i === -1 ? url : url.slice(0, i);
 }

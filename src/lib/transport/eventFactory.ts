@@ -52,7 +52,6 @@ export class EventFactoryImpl implements EventFactory {
       event: eventName,
       userId: this.user.getUserId(),
       anonymousId: this.user.getAnonymousId(),
-      traits: this.user.getTraits(),
       properties,
     };
 
@@ -68,7 +67,6 @@ export class EventFactoryImpl implements EventFactory {
       name: pageName,
       userId: this.user.getUserId(),
       anonymousId: this.user.getAnonymousId(),
-      traits: this.user.getTraits(),
       properties,
     };
 

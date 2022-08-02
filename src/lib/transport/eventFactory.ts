@@ -14,6 +14,10 @@ export interface EventFactory {
     eventName: string,
     properties?: JournifyEvent["properties"]
   ): JournifyEvent;
+  newPageEvent(
+    pageName: string,
+    properties?: JournifyEvent["properties"]
+  ): JournifyEvent;
 }
 
 export class EventFactoryImpl implements EventFactory {
@@ -46,6 +50,21 @@ export class EventFactoryImpl implements EventFactory {
     const baseEvent: JournifyEvent = {
       type: "track" as const,
       event: eventName,
+      userId: this.user.getUserId(),
+      anonymousId: this.user.getAnonymousId(),
+      properties,
+    };
+
+    return this.normalizeEvent(baseEvent);
+  }
+
+  public newPageEvent(
+    pageName: string,
+    properties?: JournifyEvent["properties"]
+  ): JournifyEvent {
+    const baseEvent: JournifyEvent = {
+      type: "page" as const,
+      name: pageName,
       userId: this.user.getUserId(),
       anonymousId: this.user.getAnonymousId(),
       properties,

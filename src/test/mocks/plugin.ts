@@ -14,9 +14,14 @@ export class JPluginMock implements JPlugin {
   public track(ctx: Context): Promise<Context> | Context {
     return this.funcs?.track(ctx);
   }
+
+  public page(ctx: Context): Promise<Context> | Context {
+    return this.funcs?.page(ctx);
+  }
 }
 
 export interface JPluginMockFuncs {
   identify?: jest.Func;
   track?: jest.Func;
+  page?: jest.Func;
 }

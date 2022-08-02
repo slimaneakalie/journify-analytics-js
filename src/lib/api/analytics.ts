@@ -47,7 +47,7 @@ export class Analytics extends EmitterImpl {
   }
 
   public async track(eventName: string, properties?: object): Promise<Context> {
-    if (isEmptyString(eventName)) {
+    if (isNonValidString(eventName)) {
       throw new Error("Event name is missing");
     }
 
@@ -64,11 +64,11 @@ export class Analytics extends EmitterImpl {
   }
 
   public async page(pageName: string, properties?: object): Promise<Context> {
-    if (isEmptyString(pageName)) {
+    if (isNonValidString(pageName)) {
       throw new Error("Page name is missing");
     }
 
-    const event = this.eventFactory.newTrackEvent(
+    const event = this.eventFactory.newPageEvent(
       pageName,
       properties as JournifyEvent["properties"]
     );
@@ -87,7 +87,7 @@ export class Analytics extends EmitterImpl {
   }
 }
 
-function isEmptyString(str: string): boolean {
+function isNonValidString(str: string): boolean {
   return !str || typeof str !== "string" || str.trim().length === 0;
 }
 

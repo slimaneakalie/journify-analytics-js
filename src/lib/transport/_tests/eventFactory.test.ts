@@ -1,10 +1,9 @@
 import { EventFactoryImpl } from "../eventFactory";
-import { UserMock, UserMockFuncs } from "../../../test/mocks/user";
+import { UserMock } from "../../../test/mocks/user";
 import { User } from "../../domain/user";
 import { Traits } from "../../domain/traits";
 import { JournifyEvent } from "../../domain/event";
 import { LIB_VERSION } from "../../generated/libVersion";
-import { getCanonicalPath, getCanonicalUrl } from "../utils";
 import { MemoryStore } from "../../store/memoryStore";
 
 describe("EventFactoryImpl class", () => {

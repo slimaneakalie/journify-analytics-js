@@ -4,7 +4,8 @@ import md5 from "spark-md5";
 import { User } from "../domain/user";
 import { JournifyEvent } from "../domain/event";
 import { LIB_VERSION } from "../generated/libVersion";
-import { getCanonicalPath, getCanonicalUrl } from "./utils";
+import { getCanonicalPath, getCanonicalUrl, getUtm } from "./utils";
+import { Store } from "../store/store";
 
 export interface EventFactory {
   setUser(user: User);
@@ -17,6 +18,11 @@ export interface EventFactory {
 
 export class EventFactoryImpl implements EventFactory {
   private user: User;
+  private readonly cookiesStore: Store;
+
+  public constructor(cookieStore: Store) {
+    this.cookiesStore = cookieStore;
+  }
 
   public setUser(user: User) {
     this.user = user;
@@ -58,6 +64,8 @@ export class EventFactoryImpl implements EventFactory {
       path: getCanonicalPath(),
       url: getCanonicalUrl(),
     };
+
+    ctx.utm = getUtm(location?.search, this.cookiesStore);
 
     if (!ctx.locale) {
       ctx.locale = navigator

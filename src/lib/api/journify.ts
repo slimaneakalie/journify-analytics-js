@@ -33,7 +33,7 @@ export class Journify {
     );
     const deps: AnalyticsDependencies = {
       userFactory: new UserFactoryImpl(localStorage, cookiesStore, memoryStore),
-      eventFactory: new EventFactoryImpl(),
+      eventFactory: new EventFactoryImpl(cookiesStore),
       contextFactory: new ContextFactoryImpl(),
       eventQueue: new EventQueueImpl(plugins, pQueue),
     };

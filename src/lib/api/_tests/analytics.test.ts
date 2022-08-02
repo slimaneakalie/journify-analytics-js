@@ -26,6 +26,12 @@ import {
   ContextFactoryMock,
   ContextMock,
 } from "../../../test/mocks/context";
+import { Group, GroupFactory } from "../../domain/group";
+import {
+  GroupFactoryMock,
+  GroupMock,
+  GroupMockFuncs,
+} from "../../../test/mocks/group";
 
 describe("Analytics class", () => {
   describe("identify method", () => {
@@ -54,6 +60,22 @@ describe("Analytics class", () => {
         userMockFuncs
       );
       const userFactory: UserFactory = new UserFactoryMock(user);
+
+      const initialGroupId = "initial-group-id-example";
+      const initialGroupTraits: Traits = {
+        email: "example-group@mail.com",
+        location: "UK",
+      };
+
+      const groupMockFuncs: GroupMockFuncs = {
+        identify: jest.fn(),
+      };
+      const group: Group = new GroupMock(
+        initialGroupId,
+        initialGroupTraits,
+        groupMockFuncs
+      );
+      const groupFactory: GroupFactory = new GroupFactoryMock(group);
 
       const event: JournifyEvent = {
         messageId: "message-id-example",
@@ -86,6 +108,7 @@ describe("Analytics class", () => {
 
       const deps: AnalyticsDependencies = {
         userFactory,
+        groupFactory,
         eventFactory,
         contextFactory,
         eventQueue,

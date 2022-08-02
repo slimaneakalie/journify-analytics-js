@@ -4,6 +4,7 @@ import { User } from "../../domain/user";
 import { Traits } from "../../domain/traits";
 import { JournifyEvent } from "../../domain/event";
 import { LIB_VERSION } from "../../generated/libVersion";
+import { getCanonicalPath, getCanonicalUrl } from "../utils";
 
 describe("EventFactoryImpl class", () => {
   describe("newIdentifyEvent method", () => {
@@ -16,6 +17,38 @@ describe("EventFactoryImpl class", () => {
         userAgent,
         language: locale,
         ...global.navigator,
+      };
+
+      const canonicalUrl = "http://www.journify.io";
+      const pathname = "/blog/tech";
+      const referrer = "https://www.google.com/";
+      const title = "Page title example";
+
+      global.document = {
+        referrer,
+        title,
+        querySelector: (query: string) => {
+          expect(query).toEqual("link[rel='canonical']");
+          return {
+            getAttribute(qualifiedName: string): string | null {
+              expect(qualifiedName).toEqual("href");
+              return canonicalUrl;
+            },
+          };
+        },
+        createElement: (elementType: string) => {
+          expect(elementType).toEqual("a");
+          return {
+            pathname,
+          };
+        },
+        ...global.document,
+      };
+
+      const sq = "?q=123&p=journify";
+      global.location = {
+        search: sq,
+        ...global.location,
       };
 
       const initialUserId = "initial-user-id-example";
@@ -32,8 +65,9 @@ describe("EventFactoryImpl class", () => {
       );
 
       const eventFactory = new EventFactoryImpl();
+      eventFactory.setUser(user);
 
-      const actualEvent = eventFactory.newIdentifyEvent(user);
+      const actualEvent = eventFactory.newIdentifyEvent();
       const expectedEvent: JournifyEvent = {
         type: "identify" as const,
         userId: initialUserId,
@@ -45,6 +79,13 @@ describe("EventFactoryImpl class", () => {
           library: {
             name: "@journifyio/analytics.js",
             version: LIB_VERSION,
+          },
+          page: {
+            url: `${canonicalUrl}${sq}`,
+            path: pathname,
+            search: sq,
+            referrer,
+            title,
           },
         },
       };

@@ -4,18 +4,45 @@ import md5 from "spark-md5";
 import { User } from "../domain/user";
 import { JournifyEvent } from "../domain/event";
 import { LIB_VERSION } from "../generated/libVersion";
+import { getCanonicalPath, getCanonicalUrl } from "./utils";
 
 export interface EventFactory {
-  newIdentifyEvent(user: User): JournifyEvent;
+  setUser(user: User);
+  newIdentifyEvent(): JournifyEvent;
+  newTrackEvent(
+    eventName: string,
+    properties?: JournifyEvent["properties"]
+  ): JournifyEvent;
 }
 
 export class EventFactoryImpl implements EventFactory {
-  public newIdentifyEvent(user: User): JournifyEvent {
+  private user: User;
+
+  public setUser(user: User) {
+    this.user = user;
+  }
+
+  public newIdentifyEvent(): JournifyEvent {
     const baseEvent: JournifyEvent = {
       type: "identify" as const,
-      userId: user.getUserId(),
-      anonymousId: user.getAnonymousId(),
-      traits: user.getTraits(),
+      userId: this.user.getUserId(),
+      anonymousId: this.user.getAnonymousId(),
+      traits: this.user.getTraits(),
+    };
+
+    return this.normalizeEvent(baseEvent);
+  }
+
+  public newTrackEvent(
+    eventName: string,
+    properties?: JournifyEvent["properties"]
+  ): JournifyEvent {
+    const baseEvent: JournifyEvent = {
+      type: "track" as const,
+      event: eventName,
+      userId: this.user.getUserId(),
+      anonymousId: this.user.getAnonymousId(),
+      properties,
     };
 
     return this.normalizeEvent(baseEvent);
@@ -24,6 +51,14 @@ export class EventFactoryImpl implements EventFactory {
   private normalizeEvent(baseEvent: JournifyEvent): JournifyEvent {
     const ctx = baseEvent?.context || {};
     ctx.userAgent = navigator?.userAgent;
+    ctx.page = {
+      referrer: document.referrer,
+      search: location.search,
+      title: document.title,
+      path: getCanonicalPath(),
+      url: getCanonicalUrl(),
+    };
+
     if (!ctx.locale) {
       ctx.locale = navigator
         ? navigator.language || navigator["userLanguage"]

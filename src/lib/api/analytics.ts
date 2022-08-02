@@ -7,6 +7,7 @@ import { JournifyEvent } from "../domain/event";
 import { EventQueue } from "../transport/queue";
 
 const IDENTIFY_EVENT_NAME = "identify";
+const TRACK_EVENT_NAME = "track";
 
 export interface AnalyticsDependencies {
   userFactory: UserFactory;
@@ -24,20 +25,44 @@ export class Analytics extends EmitterImpl {
 
   public constructor(settings: AnalyticsSettings, deps: AnalyticsDependencies) {
     super();
+
     this.settings = settings;
-    this.user = deps.userFactory.newUser();
-    this.eventFactory = deps.eventFactory;
     this.contextFactory = deps.contextFactory;
     this.eventQueue = deps.eventQueue;
+    this.eventFactory = deps.eventFactory;
+
+    this.user = deps.userFactory.newUser();
+    this.eventFactory.setUser(this.user);
   }
 
   public async identify(userId: string, traits?: Traits): Promise<Context> {
     this.user.identify(userId, traits);
-    const event = this.eventFactory.newIdentifyEvent(this.user);
+    const event = this.eventFactory.newIdentifyEvent();
     const ctx = await this.dispatchEvent(event);
     const ctxEvent = ctx.getEvent();
 
     this.emit(IDENTIFY_EVENT_NAME, ctxEvent.userId, ctxEvent.traits);
+    return ctx;
+  }
+
+  public async track(eventName: string, properties?: object): Promise<Context> {
+    if (
+      !eventName ||
+      typeof eventName !== "string" ||
+      eventName.trim().length === 0
+    ) {
+      throw new Error("Event name is missing");
+    }
+
+    const event = this.eventFactory.newTrackEvent(
+      eventName,
+      properties as JournifyEvent["properties"]
+    );
+
+    const ctx = await this.dispatchEvent(event);
+    const ctxEvent = ctx.getEvent();
+    this.emit(TRACK_EVENT_NAME, ctxEvent.event, ctxEvent.properties);
+
     return ctx;
   }
 

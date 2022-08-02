@@ -1,4 +1,4 @@
-import { AnalyticsBrowser } from "./api/browser";
+import { Journify } from "./api/journify";
 import { AnalyticsSettings } from "./api/analytics";
 
-export { AnalyticsBrowser, AnalyticsSettings };
+export { Journify, AnalyticsSettings };

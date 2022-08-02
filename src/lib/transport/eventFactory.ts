@@ -63,8 +63,9 @@ export class EventFactoryImpl implements EventFactory {
       title: document.title,
       path: getCanonicalPath(),
       url: getCanonicalUrl(),
-      utm: getUtm(location?.search, this.cookiesStore),
     };
+
+    ctx.utm = getUtm(location?.search, this.cookiesStore);
 
     if (!ctx.locale) {
       ctx.locale = navigator

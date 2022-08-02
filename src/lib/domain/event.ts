@@ -31,6 +31,7 @@ interface EventContext {
   };
   locale?: string;
   page?: EventContextPage;
+  utm?: Utm;
   [key: string]: any;
 }
 
@@ -40,5 +41,4 @@ interface EventContextPage {
   search?: string;
   title?: string;
   url?: string;
-  utm?: Utm;
 }

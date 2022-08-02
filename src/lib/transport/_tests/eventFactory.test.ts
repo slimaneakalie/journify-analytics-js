@@ -5,6 +5,7 @@ import { Traits } from "../../domain/traits";
 import { JournifyEvent } from "../../domain/event";
 import { LIB_VERSION } from "../../generated/libVersion";
 import { getCanonicalPath, getCanonicalUrl } from "../utils";
+import { MemoryStore } from "../../store/memoryStore";
 
 describe("EventFactoryImpl class", () => {
   describe("newIdentifyEvent method", () => {
@@ -45,7 +46,8 @@ describe("EventFactoryImpl class", () => {
         ...global.document,
       };
 
-      const sq = "?q=123&p=journify";
+      const sq =
+        "?utm_source=campaign-source-123&utm_medium=campaign-medium-123&utm_campaign=campaign-name-123&utm_id=campaign-id-123&utm_term=campaign-term-123&utm_content=campaign-content-123";
       global.location = {
         search: sq,
         ...global.location,
@@ -64,7 +66,8 @@ describe("EventFactoryImpl class", () => {
         {}
       );
 
-      const eventFactory = new EventFactoryImpl();
+      const cookiesStore = new MemoryStore();
+      const eventFactory = new EventFactoryImpl(cookiesStore);
       eventFactory.setUser(user);
 
       const actualEvent = eventFactory.newIdentifyEvent();
@@ -86,6 +89,14 @@ describe("EventFactoryImpl class", () => {
             search: sq,
             referrer,
             title,
+          },
+          utm: {
+            id: "campaign-id-123",
+            source: "campaign-source-123",
+            medium: "campaign-medium-123",
+            campaign: "campaign-name-123",
+            term: "campaign-term-123",
+            content: "campaign-content-123",
           },
         },
       };

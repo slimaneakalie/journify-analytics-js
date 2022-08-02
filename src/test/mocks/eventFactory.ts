@@ -24,9 +24,17 @@ export class EventFactoryMock implements EventFactory {
   ): JournifyEvent {
     return this.funcs?.newTrackEvent(eventName, properties);
   }
+
+  public newPageEvent(
+    eventName: string,
+    properties?: JournifyEvent["properties"]
+  ): JournifyEvent {
+    return this.funcs?.newPageEvent(eventName, properties);
+  }
 }
 
 export interface EventFactoryFuncs {
   newIdentifyEvent?: jest.Func;
   newTrackEvent?: jest.Func;
+  newPageEvent?: jest.Func;
 }

@@ -6,6 +6,7 @@ export interface JournifyEvent {
   userId?: string;
   anonymousId?: string;
   event?: string;
+  name?: string;
   traits?: Traits;
   timestamp?: Date | string;
   context?: EventContext;

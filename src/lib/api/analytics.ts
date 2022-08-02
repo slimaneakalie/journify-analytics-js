@@ -8,6 +8,7 @@ import { EventQueue } from "../transport/queue";
 
 const IDENTIFY_EVENT_NAME = "identify";
 const TRACK_EVENT_NAME = "track";
+const PAGE_EVENT_NAME = "page";
 
 export interface AnalyticsDependencies {
   userFactory: UserFactory;
@@ -46,11 +47,7 @@ export class Analytics extends EmitterImpl {
   }
 
   public async track(eventName: string, properties?: object): Promise<Context> {
-    if (
-      !eventName ||
-      typeof eventName !== "string" ||
-      eventName.trim().length === 0
-    ) {
+    if (isEmptyString(eventName)) {
       throw new Error("Event name is missing");
     }
 
@@ -66,11 +63,32 @@ export class Analytics extends EmitterImpl {
     return ctx;
   }
 
+  public async page(pageName: string, properties?: object): Promise<Context> {
+    if (isEmptyString(pageName)) {
+      throw new Error("Page name is missing");
+    }
+
+    const event = this.eventFactory.newTrackEvent(
+      pageName,
+      properties as JournifyEvent["properties"]
+    );
+
+    const ctx = await this.dispatchEvent(event);
+    const ctxEvent = ctx.getEvent();
+    this.emit(PAGE_EVENT_NAME, ctxEvent.event, ctxEvent.properties);
+
+    return ctx;
+  }
+
   private async dispatchEvent(event: JournifyEvent): Promise<Context> {
     const eventCtx = this.contextFactory.newContext(event);
     const deliveredCtx: Context = await this.eventQueue.deliver(eventCtx);
     return deliveredCtx;
   }
+}
+
+function isEmptyString(str: string): boolean {
+  return !str || typeof str !== "string" || str.trim().length === 0;
 }
 
 export interface AnalyticsSettings {

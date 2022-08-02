@@ -12,6 +12,7 @@ export class JournifyioPlugin implements JPlugin {
 
   public identify = this.post;
   public track = this.post;
+  public page = this.post;
 
   private async post(ctx: Context): Promise<Context> {
     const apiHost = this.analyticsSettings.apiHost ?? "https://api.journify.io";

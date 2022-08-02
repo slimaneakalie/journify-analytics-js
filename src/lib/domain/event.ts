@@ -14,6 +14,15 @@ export interface JournifyEvent {
   };
 }
 
+export interface Utm {
+  id?: string;
+  source?: string;
+  medium?: string;
+  campaign?: string;
+  term?: string;
+  content?: string;
+}
+
 interface EventContext {
   userAgent?: string;
   library?: {
@@ -21,12 +30,15 @@ interface EventContext {
     version: string;
   };
   locale?: string;
-  page?: {
-    path: string;
-    referrer: string;
-    search: string;
-    title: string;
-    url: string;
-  };
+  page?: EventContextPage;
   [key: string]: any;
+}
+
+interface EventContextPage {
+  path?: string;
+  referrer?: string;
+  search?: string;
+  title?: string;
+  url?: string;
+  utm?: Utm;
 }

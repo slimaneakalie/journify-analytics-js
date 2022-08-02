@@ -14,6 +14,7 @@ import { UserFactoryImpl } from "../domain/user";
 import { EventFactoryImpl } from "../transport/eventFactory";
 import { Context, ContextFactoryImpl } from "../transport/context";
 import { OperationsPriorityQueueImpl } from "../lib/priorityQueue";
+import { GroupFactoryImpl } from "../domain/group";
 
 export class Journify {
   public static load(settings: AnalyticsSettings): Analytics {
@@ -33,6 +34,11 @@ export class Journify {
     );
     const deps: AnalyticsDependencies = {
       userFactory: new UserFactoryImpl(localStorage, cookiesStore, memoryStore),
+      groupFactory: new GroupFactoryImpl(
+        localStorage,
+        cookiesStore,
+        memoryStore
+      ),
       eventFactory: new EventFactoryImpl(cookiesStore),
       contextFactory: new ContextFactoryImpl(),
       eventQueue: new EventQueueImpl(plugins, pQueue),

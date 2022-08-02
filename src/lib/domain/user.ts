@@ -13,7 +13,7 @@ export interface User {
 }
 
 export interface UserFactory {
-  newUser(): User;
+  loadUser(): User;
 }
 
 export class UserFactoryImpl implements UserFactory {
@@ -31,7 +31,7 @@ export class UserFactoryImpl implements UserFactory {
     this.memoryStore = memoryStore;
   }
 
-  public newUser(): User {
+  public loadUser(): User {
     return new UserImpl(this.localStorage, this.cookiesStore, this.memoryStore);
   }
 }

@@ -8,3 +8,4 @@ export type JSONObject = { [member: string]: JSONValue };
 export type JSONArray = Array<JSONValue>;
 
 export const USER_TRAITS_PERSISTENCE_KEY = "journifyio_user_traits";
+export const GROUP_TRAITS_PERSISTENCE_KEY = "journifyio_group_traits";

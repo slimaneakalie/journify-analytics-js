@@ -12,7 +12,7 @@ describe("UserFactoryImpl class", () => {
       const stores = createStoresForTest();
       const { local, cookies, memory } = stores;
       const factory = new UserFactoryImpl(local, cookies, memory);
-      const user = factory.newUser();
+      const user = factory.loadUser();
 
       expect(user).toBeDefined();
       expect(user.getUserId()).toBeNull();
@@ -52,7 +52,7 @@ describe("User interface", () => {
       cookies.set("journifyio_user_traits", oldTraits);
 
       const factory = new UserFactoryImpl(local, cookies, memory);
-      const user = factory.newUser();
+      const user = factory.loadUser();
       const newUserId = "138738937";
       const newTraits = {
         email: "user-2@mail.com",
@@ -78,7 +78,7 @@ describe("User interface", () => {
       local.set("journifyio_user_traits", oldTraits);
 
       const factory = new UserFactoryImpl(local, cookies, memory);
-      const user = factory.newUser();
+      const user = factory.loadUser();
 
       const newTraits = {
         clicks: 337,
@@ -104,7 +104,7 @@ describe("User interface", () => {
     it("Should return null when there is no user id on different stores", () => {
       const { local, cookies, memory } = createStoresForTest();
       const factory = new UserFactoryImpl(local, cookies, memory);
-      const user = factory.newUser();
+      const user = factory.loadUser();
       expect(user.getUserId()).toBeNull();
     });
   });
@@ -113,7 +113,7 @@ describe("User interface", () => {
     it("Should not return null for anonymous id", () => {
       const { local, cookies, memory } = createStoresForTest();
       const factory = new UserFactoryImpl(local, cookies, memory);
-      const user = factory.newUser();
+      const user = factory.loadUser();
       const anonymousId = user.getAnonymousId();
       expect(anonymousId).toBeDefined();
       expect(anonymousId.length).toBeGreaterThan(0);
@@ -124,7 +124,7 @@ describe("User interface", () => {
     it("Should return an empty object when there is no traits on different stores", () => {
       const { local, cookies, memory } = createStoresForTest();
       const factory = new UserFactoryImpl(local, cookies, memory);
-      const user = factory.newUser();
+      const user = factory.loadUser();
       expect(user.getTraits()).toEqual({});
     });
   });
@@ -147,7 +147,7 @@ function testFetchUserDataFromStore(storeKey: keyof TestStores) {
   stores[storeKey].set("journifyio_user_traits", traits);
 
   const factory = new UserFactoryImpl(local, cookies, memory);
-  const user = factory.newUser();
+  const user = factory.loadUser();
   expect(user.getUserId()).toEqual(userId);
   expect(user.getAnonymousId()).toEqual(anonymousId);
   expect(user.getTraits()).toEqual(traits);

@@ -5,13 +5,16 @@ import { User, UserFactory } from "../domain/user";
 import { EventFactory } from "../transport/eventFactory";
 import { JournifyEvent } from "../domain/event";
 import { EventQueue } from "../transport/queue";
+import { Group, GroupFactory } from "../domain/group";
 
 const IDENTIFY_EVENT_NAME = "identify";
 const TRACK_EVENT_NAME = "track";
 const PAGE_EVENT_NAME = "page";
+const GROUP_EVENT_NAME = "group";
 
 export interface AnalyticsDependencies {
   userFactory: UserFactory;
+  groupFactory: GroupFactory;
   eventFactory: EventFactory;
   contextFactory: ContextFactory;
   eventQueue: EventQueue;
@@ -19,6 +22,7 @@ export interface AnalyticsDependencies {
 
 export class Analytics extends EmitterImpl {
   private readonly settings: AnalyticsSettings;
+  private readonly _group: Group;
   private readonly user: User;
   private readonly eventFactory: EventFactory;
   private readonly contextFactory: ContextFactory;
@@ -32,8 +36,11 @@ export class Analytics extends EmitterImpl {
     this.eventQueue = deps.eventQueue;
     this.eventFactory = deps.eventFactory;
 
-    this.user = deps.userFactory.newUser();
+    this.user = deps.userFactory.loadUser();
     this.eventFactory.setUser(this.user);
+
+    this._group = deps.groupFactory.loadGroup();
+    this.eventFactory.setGroup(this._group);
   }
 
   public async identify(userId: string, traits?: Traits): Promise<Context> {
@@ -77,6 +84,16 @@ export class Analytics extends EmitterImpl {
     const ctxEvent = ctx.getEvent();
     this.emit(PAGE_EVENT_NAME, ctxEvent.event, ctxEvent.properties);
 
+    return ctx;
+  }
+
+  public async group(groupId: string, traits?: Traits) {
+    this._group.identify(groupId, traits);
+    const event = this.eventFactory.newGroupEvent();
+    const ctx = await this.dispatchEvent(event);
+    const ctxEvent = ctx.getEvent();
+
+    this.emit(GROUP_EVENT_NAME, ctxEvent.groupId, ctxEvent.traits);
     return ctx;
   }
 

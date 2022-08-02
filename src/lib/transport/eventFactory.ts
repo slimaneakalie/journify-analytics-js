@@ -6,9 +6,12 @@ import { JournifyEvent } from "../domain/event";
 import { LIB_VERSION } from "../generated/libVersion";
 import { getCanonicalPath, getCanonicalUrl, getUtmCampaign } from "./utils";
 import { Store } from "../store/store";
+import { Group } from "../domain/group";
 
 export interface EventFactory {
   setUser(user: User);
+  setGroup(group: Group);
+
   newIdentifyEvent(): JournifyEvent;
   newTrackEvent(
     eventName: string,
@@ -18,14 +21,20 @@ export interface EventFactory {
     pageName: string,
     properties?: JournifyEvent["properties"]
   ): JournifyEvent;
+  newGroupEvent(): JournifyEvent;
 }
 
 export class EventFactoryImpl implements EventFactory {
   private user: User;
+  private group: Group;
   private readonly cookiesStore: Store;
 
   public constructor(cookieStore: Store) {
     this.cookiesStore = cookieStore;
+  }
+
+  public setGroup(group: Group) {
+    this.group = group;
   }
 
   public setUser(user: User) {
@@ -68,6 +77,16 @@ export class EventFactoryImpl implements EventFactory {
       userId: this.user.getUserId(),
       anonymousId: this.user.getAnonymousId(),
       properties,
+    };
+
+    return this.normalizeEvent(baseEvent);
+  }
+
+  public newGroupEvent(): JournifyEvent {
+    const baseEvent: JournifyEvent = {
+      type: "group" as const,
+      groupId: this.group.getGroupId(),
+      traits: this.user.getTraits(),
     };
 
     return this.normalizeEvent(baseEvent);

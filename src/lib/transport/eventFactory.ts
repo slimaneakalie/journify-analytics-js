@@ -86,7 +86,7 @@ export class EventFactoryImpl implements EventFactory {
     const baseEvent: JournifyEvent = {
       type: "group" as const,
       groupId: this.group.getGroupId(),
-      traits: this.user.getTraits(),
+      traits: this.group.getTraits(),
     };
 
     return this.normalizeEvent(baseEvent);

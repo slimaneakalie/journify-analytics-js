@@ -41,7 +41,6 @@ class GroupImpl implements Group {
   private localStorage: Store;
   private cookiesStore: Store;
   private memoryStore: Store;
-  private anonymousId: string;
   private groupId: string;
   private traits: Traits;
 

@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { Utm } from "../domain/event";
+import { UtmCampaign } from "../domain/event";
 import { Store } from "../store/store";
 
 export function isOffline(): boolean {
@@ -37,14 +37,17 @@ export function getCanonicalUrl(): string {
   return i === -1 ? url : url.slice(0, i);
 }
 
-export function getUtm(queryString: string, cookiesStore: Store): Utm {
-  const utm: Utm = {};
+export function getUtmCampaign(
+  queryString: string,
+  cookiesStore: Store
+): UtmCampaign {
+  const utm: UtmCampaign = {};
   const sParams = new URLSearchParams(queryString);
-  const keys: [string, keyof Utm][] = [
+  const keys: [string, keyof UtmCampaign][] = [
     ["utm_id", "id"],
+    ["utm_campaign", "name"],
     ["utm_source", "source"],
     ["utm_medium", "medium"],
-    ["utm_campaign", "campaign"],
     ["utm_term", "term"],
     ["utm_content", "content"],
   ];

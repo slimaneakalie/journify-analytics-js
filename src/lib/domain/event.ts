@@ -14,11 +14,11 @@ export interface JournifyEvent {
   };
 }
 
-export interface Utm {
+export interface UtmCampaign {
   id?: string;
+  name?: string;
   source?: string;
   medium?: string;
-  campaign?: string;
   term?: string;
   content?: string;
 }
@@ -31,7 +31,7 @@ interface EventContext {
   };
   locale?: string;
   page?: EventContextPage;
-  utm?: Utm;
+  campaign?: UtmCampaign;
   [key: string]: any;
 }
 

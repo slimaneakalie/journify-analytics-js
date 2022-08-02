@@ -89,11 +89,11 @@ describe("EventFactoryImpl class", () => {
             referrer,
             title,
           },
-          utm: {
+          campaign: {
             id: "campaign-id-123",
+            name: "campaign-name-123",
             source: "campaign-source-123",
             medium: "campaign-medium-123",
-            campaign: "campaign-name-123",
             term: "campaign-term-123",
             content: "campaign-content-123",
           },

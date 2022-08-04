@@ -72,8 +72,6 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     const ctxToDeliver: Context = this.pQueue.pop();
     this.flushing = false;
 
-    console.log("Popped -  ctxToDeliver: ", ctxToDeliver);
-
     if (!ctxToDeliver) {
       return;
     }
@@ -89,7 +87,6 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
   private async runPlugins(ctxToDeliver: Context): Promise<Context> {
     let ctx: Context = ctxToDeliver;
     for (const plugin of this.plugins) {
-      console.log("runPlugins -  plugin: ", plugin, ", ctx: ", ctx);
       const deliveredCtx = await this.runPlugin(ctx, plugin);
       ctx = deliveredCtx;
     }
@@ -102,12 +99,6 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     plugin: JPlugin
   ): Promise<Context> {
     const event = ctxToDeliver.getEvent();
-    console.log(
-      "runPlugin -  event: ",
-      event,
-      ", plugin[event.type]: ",
-      plugin[event.type]
-    );
     if (!plugin || !plugin[event.type]) {
       return ctxToDeliver;
     }

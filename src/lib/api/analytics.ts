@@ -88,12 +88,22 @@ export class Analytics extends EmitterImpl {
   }
 
   public async group(groupId: string, traits?: Traits) {
+    console.log("group invoked");
     this._group.identify(groupId, traits);
+    console.log("group identify finish");
     const event = this.eventFactory.newGroupEvent();
+    console.log("group newGroupEvent finish - event: ", event);
     const ctx = await this.dispatchEvent(event);
+    console.log("group dispatchEvent finish - ctx: ", ctx);
     const ctxEvent = ctx.getEvent();
-
+    console.log("group getEvent finish - ctxEvent: ", ctxEvent);
     this.emit(GROUP_EVENT_NAME, ctxEvent.groupId, ctxEvent.traits);
+    console.log(
+      "group emit finish - ctxEvent.groupId: ",
+      ctxEvent.groupId,
+      ", ctxEvent.traits: ",
+      ctxEvent.traits
+    );
     return ctx;
   }
 

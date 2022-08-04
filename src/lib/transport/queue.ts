@@ -61,10 +61,7 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
   }
 
   private async flush(): Promise<void> {
-    if (this.flushing) {
-      return;
-    }
-
+    while (this.flushing);
     this.flushing = true;
 
     if (this.pQueue.isEmpty() || isOffline()) {
@@ -73,17 +70,18 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     }
 
     const ctxToDeliver: Context = this.pQueue.pop();
+    this.flushing = false;
+
+    console.log("Popped -  ctxToDeliver: ", ctxToDeliver);
+
     if (!ctxToDeliver) {
-      this.flushing = false;
       return;
     }
 
     try {
       const deliveredCtx = await this.runPlugins(ctxToDeliver);
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
-      this.flushing = false;
     } catch (err: any) {
-      this.flushing = false;
       this.handleFlushError(ctxToDeliver, err);
     }
   }
@@ -91,6 +89,7 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
   private async runPlugins(ctxToDeliver: Context): Promise<Context> {
     let ctx: Context = ctxToDeliver;
     for (const plugin of this.plugins) {
+      console.log("runPlugins -  plugin: ", plugin, ", ctx: ", ctx);
       const deliveredCtx = await this.runPlugin(ctx, plugin);
       ctx = deliveredCtx;
     }
@@ -103,6 +102,12 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     plugin: JPlugin
   ): Promise<Context> {
     const event = ctxToDeliver.getEvent();
+    console.log(
+      "runPlugin -  event: ",
+      event,
+      ", plugin[event.type]: ",
+      plugin[event.type]
+    );
     if (!plugin || !plugin[event.type]) {
       return ctxToDeliver;
     }

@@ -1,4 +1,3 @@
-import { Store } from "../../lib/store/store";
 import { MemoryStore } from "../../lib/store/memoryStore";
 
 export interface TestStores {

@@ -2,9 +2,9 @@
 This SDK enables you to send your data to Journify back-office without any additional integrations for new added destinations.
 
 # Quickstart
-The easiest and quickest way to get started with the SDK is to [use it through Journify](#-using-with-journify). Alternatively, you can [install it through NPM](#-using-as-an-npm-package) or simply [add it to your HTML page](#-using-in-html-page) and do the instrumentation yourself.
+The easiest and quickest way to get started with the SDK is to [use it through Journify](#using-with-journify). Alternatively, you can [install it through NPM](#using-as-an-npm-package) or simply [add it to your HTML page](#using-in-html-page) and do the instrumentation yourself.
 
-## Using with Segment
+## Using with Journify
 1. Create a javascript source at [Journify](https://app.journify.io) and you will automatically get a snippet that you can add to your website. For more information visit our [documentation](https://journify.io/docs/sources/javascript).
 2. Start tracking!
 

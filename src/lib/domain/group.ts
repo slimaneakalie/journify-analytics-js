@@ -1,5 +1,5 @@
 import { Traits, GROUP_TRAITS_PERSISTENCE_KEY } from "./traits";
-import { Store } from "../store/store";
+import { StoresGroup } from "../store/store";
 
 const GROUP_ID_PERSISTENCE_KEY = "journifyio_group_id";
 
@@ -14,44 +14,24 @@ export interface GroupFactory {
 }
 
 export class GroupFactoryImpl implements GroupFactory {
-  private readonly localStorage: Store;
-  private readonly cookiesStore: Store;
-  private readonly memoryStore: Store;
+  private readonly stores: StoresGroup;
 
-  public constructor(
-    localStorage: Store,
-    cookiesStore: Store,
-    memoryStore: Store
-  ) {
-    this.localStorage = localStorage;
-    this.cookiesStore = cookiesStore;
-    this.memoryStore = memoryStore;
+  public constructor(stores: StoresGroup) {
+    this.stores = stores;
   }
 
   public loadGroup(): Group {
-    return new GroupImpl(
-      this.localStorage,
-      this.cookiesStore,
-      this.memoryStore
-    );
+    return new GroupImpl(this.stores);
   }
 }
 
 class GroupImpl implements Group {
-  private localStorage: Store;
-  private cookiesStore: Store;
-  private memoryStore: Store;
+  private readonly stores: StoresGroup;
   private groupId: string;
   private traits: Traits;
 
-  public constructor(
-    localStorage: Store,
-    cookiesStore: Store,
-    memoryStore: Store
-  ) {
-    this.localStorage = localStorage;
-    this.cookiesStore = cookiesStore;
-    this.memoryStore = memoryStore;
+  public constructor(stores: StoresGroup) {
+    this.stores = stores;
     this.initGroupId();
     this.initTraits();
   }
@@ -78,29 +58,14 @@ class GroupImpl implements Group {
   }
 
   private initGroupId() {
-    this.groupId = this.getFromStores(GROUP_ID_PERSISTENCE_KEY);
+    this.groupId = this.stores.get(GROUP_ID_PERSISTENCE_KEY);
     if (this.groupId) {
-      this.setOnStores(GROUP_ID_PERSISTENCE_KEY, this.groupId);
+      this.stores.set(GROUP_ID_PERSISTENCE_KEY, this.groupId);
     }
   }
 
-  private getFromStores<T>(key: string): T | null {
-    return (
-      this.localStorage.get(key) ??
-      this.cookiesStore.get(key) ??
-      this.memoryStore.get(key) ??
-      null
-    );
-  }
-
-  private setOnStores<T>(key: string, value: T) {
-    this.localStorage.set(key, value);
-    this.cookiesStore.set(key, value);
-    this.memoryStore.set(key, value);
-  }
-
   private initTraits() {
-    const traits = this.getFromStores(GROUP_TRAITS_PERSISTENCE_KEY);
+    const traits = this.stores.get(GROUP_TRAITS_PERSISTENCE_KEY);
     if (traits) {
       this.setTraits(traits as Traits);
     } else {
@@ -110,11 +75,11 @@ class GroupImpl implements Group {
 
   private setTraits(newTraits: Traits) {
     this.traits = newTraits;
-    this.setOnStores(GROUP_TRAITS_PERSISTENCE_KEY, newTraits);
+    this.stores.set(GROUP_TRAITS_PERSISTENCE_KEY, newTraits);
   }
 
   private setGroupId(groupId: string) {
     this.groupId = groupId;
-    this.setOnStores(GROUP_ID_PERSISTENCE_KEY, groupId);
+    this.stores.set(GROUP_ID_PERSISTENCE_KEY, groupId);
   }
 }

@@ -10,9 +10,9 @@ export interface Store {
 }
 
 export class StoresGroup implements Store {
-  private localStorage: LocalStorage | MemoryStore | NullStore;
-  private cookiesStore: Cookies | MemoryStore | NullStore;
-  private memoryStore: MemoryStore;
+  private localStorage: Store;
+  private cookiesStore: Store;
+  private memoryStore: Store;
 
   public constructor(
     localStorage: LocalStorage | MemoryStore | NullStore,
@@ -26,9 +26,9 @@ export class StoresGroup implements Store {
 
   public get<T>(key: string): T | null {
     return (
-      this.localStorage.get(key) ??
-      this.cookiesStore.get(key) ??
-      this.memoryStore.get(key) ??
+      this.localStorage.get<T>(key) ??
+      this.cookiesStore.get<T>(key) ??
+      this.memoryStore.get<T>(key) ??
       null
     );
   }

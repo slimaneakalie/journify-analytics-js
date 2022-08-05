@@ -10,14 +10,14 @@ export interface Store {
 }
 
 export class StoresGroup implements Store {
-  private localStorage: LocalStorage | NullStore;
-  private cookiesStore: Cookies | NullStore;
+  private localStorage: LocalStorage | MemoryStore | NullStore;
+  private cookiesStore: Cookies | MemoryStore | NullStore;
   private memoryStore: MemoryStore;
 
   public constructor(
-    localStorage: LocalStorage | NullStore,
-    cookiesStore: Cookies | NullStore,
-    memoryStore: MemoryStore
+    localStorage: LocalStorage | MemoryStore | NullStore,
+    cookiesStore: Cookies | MemoryStore | NullStore,
+    memoryStore: MemoryStore | NullStore
   ) {
     this.localStorage = localStorage;
     this.cookiesStore = cookiesStore;

@@ -2,9 +2,9 @@ import { Store } from "../../lib/store/store";
 import { MemoryStore } from "../../lib/store/memoryStore";
 
 export interface TestStores {
-  local: Store;
-  cookies: Store;
-  memory: Store;
+  local: MemoryStore;
+  cookies: MemoryStore;
+  memory: MemoryStore;
 }
 
 export function createStoresForTest(): TestStores {

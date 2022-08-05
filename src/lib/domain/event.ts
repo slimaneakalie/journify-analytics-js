@@ -4,6 +4,7 @@ export interface JournifyEvent {
   messageId?: string;
   type: "track" | "page" | "identify" | "group" | "screen";
   userId?: string;
+  groupId?: string;
   anonymousId?: string;
   event?: string;
   name?: string;

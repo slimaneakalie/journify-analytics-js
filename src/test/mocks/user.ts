@@ -46,7 +46,7 @@ export class UserFactoryMock implements UserFactory {
     this.mockedUser = mockedUser;
   }
 
-  public newUser(): User {
+  public loadUser(): User {
     return this.mockedUser;
   }
 }

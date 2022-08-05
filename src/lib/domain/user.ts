@@ -1,6 +1,6 @@
 import { v4 as uuid } from "@lukeed/uuid";
 import { Traits, USER_TRAITS_PERSISTENCE_KEY } from "./traits";
-import { Store } from "../store/store";
+import { StoresGroup } from "../store/store";
 
 const ANONYMOUS_ID_PERSISTENCE_KEY = "journifyio_anonymous_id";
 const USER_ID_PERSISTENCE_KEY = "journifyio_user_id";
@@ -13,45 +13,29 @@ export interface User {
 }
 
 export interface UserFactory {
-  newUser(): User;
+  loadUser(): User;
 }
 
 export class UserFactoryImpl implements UserFactory {
-  private readonly localStorage: Store;
-  private readonly cookiesStore: Store;
-  private readonly memoryStore: Store;
+  private readonly stores: StoresGroup;
 
-  public constructor(
-    localStorage: Store,
-    cookiesStore: Store,
-    memoryStore: Store
-  ) {
-    this.localStorage = localStorage;
-    this.cookiesStore = cookiesStore;
-    this.memoryStore = memoryStore;
+  public constructor(stores: StoresGroup) {
+    this.stores = stores;
   }
 
-  public newUser(): User {
-    return new UserImpl(this.localStorage, this.cookiesStore, this.memoryStore);
+  public loadUser(): User {
+    return new UserImpl(this.stores);
   }
 }
 
 class UserImpl implements User {
-  private localStorage: Store;
-  private cookiesStore: Store;
-  private memoryStore: Store;
+  private stores: StoresGroup;
   private anonymousId: string;
   private userId: string;
   private traits: Traits;
 
-  public constructor(
-    localStorage: Store,
-    cookiesStore: Store,
-    memoryStore: Store
-  ) {
-    this.localStorage = localStorage;
-    this.cookiesStore = cookiesStore;
-    this.memoryStore = memoryStore;
+  public constructor(stores: StoresGroup) {
+    this.stores = stores;
     this.initUserId();
     this.initAnonymousId();
     this.initTraits();
@@ -83,38 +67,23 @@ class UserImpl implements User {
   }
 
   private initUserId() {
-    this.userId = this.getFromStores(USER_ID_PERSISTENCE_KEY);
+    this.userId = this.stores.get(USER_ID_PERSISTENCE_KEY);
     if (this.userId) {
-      this.setOnStores(USER_ID_PERSISTENCE_KEY, this.userId);
+      this.stores.set(USER_ID_PERSISTENCE_KEY, this.userId);
     }
   }
 
   private initAnonymousId() {
-    this.anonymousId = this.getFromStores(ANONYMOUS_ID_PERSISTENCE_KEY);
+    this.anonymousId = this.stores.get(ANONYMOUS_ID_PERSISTENCE_KEY);
     if (!this.anonymousId) {
       this.anonymousId = uuid();
     }
 
-    this.setOnStores(ANONYMOUS_ID_PERSISTENCE_KEY, this.anonymousId);
-  }
-
-  private getFromStores<T>(key: string): T | null {
-    return (
-      this.localStorage.get(key) ??
-      this.cookiesStore.get(key) ??
-      this.memoryStore.get(key) ??
-      null
-    );
-  }
-
-  private setOnStores<T>(key: string, value: T) {
-    this.localStorage.set(key, value);
-    this.cookiesStore.set(key, value);
-    this.memoryStore.set(key, value);
+    this.stores.set(ANONYMOUS_ID_PERSISTENCE_KEY, this.anonymousId);
   }
 
   private initTraits() {
-    const traits = this.getFromStores(USER_TRAITS_PERSISTENCE_KEY);
+    const traits = this.stores.get(USER_TRAITS_PERSISTENCE_KEY);
     if (traits) {
       this.setTraits(traits as Traits);
     } else {
@@ -124,11 +93,11 @@ class UserImpl implements User {
 
   private setTraits(newTraits: Traits) {
     this.traits = newTraits;
-    this.setOnStores(USER_TRAITS_PERSISTENCE_KEY, newTraits);
+    this.stores.set(USER_TRAITS_PERSISTENCE_KEY, newTraits);
   }
 
   private setUserId(userId: string) {
     this.userId = userId;
-    this.setOnStores(USER_ID_PERSISTENCE_KEY, userId);
+    this.stores.set(USER_ID_PERSISTENCE_KEY, userId);
   }
 }

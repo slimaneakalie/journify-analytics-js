@@ -61,10 +61,7 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
   }
 
   private async flush(): Promise<void> {
-    if (this.flushing) {
-      return;
-    }
-
+    while (this.flushing);
     this.flushing = true;
 
     if (this.pQueue.isEmpty() || isOffline()) {
@@ -73,17 +70,16 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     }
 
     const ctxToDeliver: Context = this.pQueue.pop();
+    this.flushing = false;
+
     if (!ctxToDeliver) {
-      this.flushing = false;
       return;
     }
 
     try {
       const deliveredCtx = await this.runPlugins(ctxToDeliver);
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
-      this.flushing = false;
     } catch (err: any) {
-      this.flushing = false;
       this.handleFlushError(ctxToDeliver, err);
     }
   }

@@ -3,7 +3,7 @@ import {
   AnalyticsDependencies,
   AnalyticsSettings,
 } from "./analytics";
-import { LocalStorage } from "../store/localStorage";
+import { BrowserStore } from "../store/localStorage";
 import { NullStore } from "../store/nullStore";
 import { Cookies } from "../store/cookies";
 import { MemoryStore } from "../store/memoryStore";
@@ -18,15 +18,14 @@ import { GroupFactoryImpl } from "../domain/group";
 import { StoresGroup } from "../store/store";
 
 export function load(settings: AnalyticsSettings): Analytics {
-  const localStorage = LocalStorage.isAvailable()
-    ? new LocalStorage()
-    : new NullStore();
+  const sessionStore = new BrowserStore(sessionStorage);
+  startSession(sessionStore);
 
+  const localStore = new BrowserStore(localStorage);
   const cookiesStore = Cookies.isAvailable() ? new Cookies() : new NullStore();
-
   const memoryStore = new MemoryStore();
 
-  const stores = new StoresGroup(localStorage, cookiesStore, memoryStore);
+  const stores = new StoresGroup(localStore, cookiesStore, memoryStore);
 
   const plugins: JPlugin[] = [new JournifyioPlugin(settings)];
   const pQueue = new OperationsPriorityQueueImpl<Context>(
@@ -35,13 +34,22 @@ export function load(settings: AnalyticsSettings): Analytics {
   const deps: AnalyticsDependencies = {
     userFactory: new UserFactoryImpl(stores),
     groupFactory: new GroupFactoryImpl(stores),
-    eventFactory: new EventFactoryImpl(cookiesStore),
+    eventFactory: new EventFactoryImpl(cookiesStore, sessionStore),
     contextFactory: new ContextFactoryImpl(),
     eventQueue: new EventQueueImpl(plugins, pQueue),
   };
 
   const analytics = new Analytics(settings, deps);
   return analytics;
+}
+
+export const SESSION_ID_PERSISTENCE_KEY = "journifyio_session_id";
+
+function startSession(sessionStore: BrowserStore<Storage>) {
+  const currentEpoch = new Date().getTime();
+  if (sessionStore.get(SESSION_ID_PERSISTENCE_KEY)) {
+    sessionStore.set(SESSION_ID_PERSISTENCE_KEY, currentEpoch);
+  }
 }
 
 const DEFAULT_MAX_QUEUE_ATTEMPTS = 5;

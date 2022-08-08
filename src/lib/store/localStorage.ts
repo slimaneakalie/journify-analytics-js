@@ -1,11 +1,23 @@
 import { Store } from "./store";
+import { MemoryStore } from "./memoryStore";
 
-export class LocalStorage implements Store {
-  public static isAvailable(): boolean {
-    const testKey = "journify.io-test-localstorage-key";
+export class BrowserStore<S extends Storage> implements Store {
+  private readonly browserStorage: S | null = null;
+  private memoryStore: MemoryStore | null = null;
+
+  public constructor(storage: S) {
+    if (BrowserStore.isAvailable(storage)) {
+      this.browserStorage = storage;
+    } else {
+      this.memoryStore = new MemoryStore();
+    }
+  }
+
+  private static isAvailable(storage: Storage): boolean {
+    const testKey = "journify.io-test-browser-storage-key";
     try {
-      localStorage.setItem(testKey, "journify.io-test-localstorage-value");
-      localStorage.removeItem(testKey);
+      storage.setItem(testKey, "journify.io-test-browser-storage-value");
+      storage.removeItem(testKey);
       return true;
     } catch (e) {
       return false;
@@ -13,7 +25,9 @@ export class LocalStorage implements Store {
   }
 
   public get<T>(key: string): T | null {
-    const val = localStorage.getItem(key);
+    const val: string = this.browserStorage
+      ? this.browserStorage.getItem(key)
+      : this.memoryStore.get(key);
     if (val) {
       try {
         return JSON.parse(val);
@@ -26,10 +40,13 @@ export class LocalStorage implements Store {
 
   public set<T>(key: string, value: T): T | null {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      const stringValue = JSON.stringify(value);
+      this.browserStorage
+        ? this.browserStorage.setItem(key, stringValue)
+        : this.memoryStore.set(key, stringValue);
     } catch (e) {
       console.warn(
-        `Unable to set ${key} in localStorage, storage may be full.`
+        `Unable to set ${key} in browser storage, storage may be full.`
       );
       console.warn(e);
       return null;
@@ -40,9 +57,11 @@ export class LocalStorage implements Store {
 
   public remove(key: string): void {
     try {
-      localStorage.removeItem(key);
+      this.browserStorage
+        ? this.browserStorage.removeItem(key)
+        : this.memoryStore.remove(key);
     } catch (e) {
-      console.warn(`Unable to remove ${key} from localStorage.`);
+      console.warn(`Unable to remove ${key} from browser storage.`);
       console.warn(e);
     }
   }

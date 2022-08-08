@@ -32,15 +32,20 @@ interface EventContext {
     version: string;
   };
   locale?: string;
-  page?: EventContextPage;
+  page?: Page;
   campaign?: UtmCampaign;
+  session?: Session;
   [key: string]: any;
 }
 
-interface EventContextPage {
+interface Page {
   path?: string;
   referrer?: string;
   search?: string;
   title?: string;
   url?: string;
+}
+
+interface Session {
+  id?: string;
 }

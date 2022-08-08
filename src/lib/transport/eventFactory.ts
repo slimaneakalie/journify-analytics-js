@@ -125,16 +125,18 @@ export class EventFactoryImpl implements EventFactory {
       };
     }
 
-    const session = {
-      id: this.sessionStore.get<string>(SESSION_ID_PERSISTENCE_KEY),
-    };
-
     const body: JournifyEvent = {
       ...baseEvent,
-      session,
       context: ctx,
       timestamp: new Date(),
     };
+
+    const sessionId = this.sessionStore.get<string>(SESSION_ID_PERSISTENCE_KEY);
+    if (sessionId) {
+      body.session = {
+        id: sessionId,
+      };
+    }
 
     const normalizedEvent: JournifyEvent = {
       ...body,

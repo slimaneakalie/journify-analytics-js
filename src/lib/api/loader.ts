@@ -47,7 +47,7 @@ export const SESSION_ID_PERSISTENCE_KEY = "journifyio_session_id";
 
 function startSession(sessionStore: BrowserStore<Storage>) {
   const currentEpoch = new Date().getTime();
-  if (sessionStore.get(SESSION_ID_PERSISTENCE_KEY)) {
+  if (!sessionStore.get(SESSION_ID_PERSISTENCE_KEY)) {
     sessionStore.set(SESSION_ID_PERSISTENCE_KEY, currentEpoch);
   }
 }

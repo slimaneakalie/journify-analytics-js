@@ -20,6 +20,7 @@ const config = {
     library: {
       name: "journify",
       type: "window",
+      export: "default",
     },
   },
   resolve: {

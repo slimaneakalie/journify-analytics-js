@@ -66,7 +66,8 @@ describe("EventFactoryImpl class", () => {
       );
 
       const cookiesStore = new MemoryStore();
-      const eventFactory = new EventFactoryImpl(cookiesStore);
+      const sessionStore = new MemoryStore();
+      const eventFactory = new EventFactoryImpl(cookiesStore, sessionStore);
       eventFactory.setUser(user);
 
       const actualEvent = eventFactory.newIdentifyEvent();

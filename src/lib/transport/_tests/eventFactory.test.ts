@@ -5,6 +5,8 @@ import { Traits } from "../../domain/traits";
 import { JournifyEvent } from "../../domain/event";
 import { LIB_VERSION } from "../../generated/libVersion";
 import { MemoryStore } from "../../store/memoryStore";
+import { StoresGroup } from "../../store/store";
+import { createStoresForTest } from "../../../test/helpers/stores";
 
 describe("EventFactoryImpl class", () => {
   describe("newIdentifyEvent method", () => {
@@ -65,9 +67,13 @@ describe("EventFactoryImpl class", () => {
         {}
       );
 
-      const cookiesStore = new MemoryStore();
-      const sessionStore = new MemoryStore();
-      const eventFactory = new EventFactoryImpl(cookiesStore, sessionStore);
+      const testStores = createStoresForTest();
+      const stores = new StoresGroup(
+        testStores.local,
+        testStores.cookies,
+        testStores.memory
+      );
+      const eventFactory = new EventFactoryImpl(stores);
       eventFactory.setUser(user);
 
       const actualEvent = eventFactory.newIdentifyEvent();

@@ -101,7 +101,7 @@ describe("EventFactoryImpl class", () => {
         },
       };
 
-      const dynamicKeys = ["timestamp", "messageId", "session"];
+      const dynamicKeys = ["timestamp", "messageId"];
       const expectedKeysLength =
         Object.keys(expectedEvent).length + dynamicKeys.length;
       expect(Object.keys(actualEvent)).toHaveLength(expectedKeysLength);

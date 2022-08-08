@@ -70,9 +70,13 @@ export class Analytics extends EmitterImpl {
     return ctx;
   }
 
-  public async page(pageName: string, properties?: object): Promise<Context> {
+  public async page(
+    pageNameParam?: string,
+    properties?: object
+  ): Promise<Context> {
+    let pageName: string = pageNameParam;
     if (isNonValidString(pageName)) {
-      throw new Error("Page name is missing");
+      pageName = document.title;
     }
 
     const event = this.eventFactory.newPageEvent(

@@ -11,6 +11,7 @@ export interface JournifyEvent {
   traits?: Traits;
   timestamp?: Date | string;
   context?: EventContext;
+  session?: Session;
   properties?: object & {
     [k: string]: JSONValue;
   };
@@ -34,7 +35,6 @@ interface EventContext {
   locale?: string;
   page?: Page;
   campaign?: UtmCampaign;
-  session?: Session;
   [key: string]: any;
 }
 

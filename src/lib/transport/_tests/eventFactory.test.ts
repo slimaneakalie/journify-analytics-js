@@ -66,7 +66,8 @@ describe("EventFactoryImpl class", () => {
       );
 
       const cookiesStore = new MemoryStore();
-      const eventFactory = new EventFactoryImpl(cookiesStore);
+      const sessionStore = new MemoryStore();
+      const eventFactory = new EventFactoryImpl(cookiesStore, sessionStore);
       eventFactory.setUser(user);
 
       const actualEvent = eventFactory.newIdentifyEvent();
@@ -100,7 +101,7 @@ describe("EventFactoryImpl class", () => {
         },
       };
 
-      const dynamicKeys = ["timestamp", "messageId"];
+      const dynamicKeys = ["timestamp", "messageId", "session"];
       const expectedKeysLength =
         Object.keys(expectedEvent).length + dynamicKeys.length;
       expect(Object.keys(actualEvent)).toHaveLength(expectedKeysLength);

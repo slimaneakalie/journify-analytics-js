@@ -99,10 +99,6 @@ export class EventFactoryImpl implements EventFactory {
     const ctx = baseEvent?.context || {};
     ctx.userAgent = navigator?.userAgent;
 
-    ctx.session = {
-      id: this.sessionStore.get(SESSION_ID_PERSISTENCE_KEY),
-    };
-
     ctx.page = {
       referrer: document.referrer,
       search: location.search,
@@ -129,8 +125,13 @@ export class EventFactoryImpl implements EventFactory {
       };
     }
 
+    const session = {
+      id: this.sessionStore.get<string>(SESSION_ID_PERSISTENCE_KEY),
+    };
+
     const body: JournifyEvent = {
       ...baseEvent,
+      session,
       context: ctx,
       timestamp: new Date(),
     };

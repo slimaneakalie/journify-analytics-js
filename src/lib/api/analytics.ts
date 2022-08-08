@@ -113,5 +113,6 @@ function isNonValidString(str: string): boolean {
 
 export interface AnalyticsSettings {
   writeKey: string;
+  sessionDurationMin?: number;
   apiHost?: string;
 }

@@ -5,7 +5,7 @@ import { User } from "../domain/user";
 import { JournifyEvent } from "../domain/event";
 import { LIB_VERSION } from "../generated/libVersion";
 import { getCanonicalPath, getCanonicalUrl, getUtmCampaign } from "./utils";
-import { Store } from "../store/store";
+import { StoresGroup } from "../store/store";
 import { Group } from "../domain/group";
 import { SESSION_ID_PERSISTENCE_KEY } from "../api/loader";
 
@@ -28,12 +28,10 @@ export interface EventFactory {
 export class EventFactoryImpl implements EventFactory {
   private user: User;
   private group: Group;
-  private readonly cookiesStore: Store;
-  private readonly sessionStore: Store;
+  private readonly stores: StoresGroup;
 
-  public constructor(cookieStore: Store, sessionStore: Store) {
-    this.cookiesStore = cookieStore;
-    this.sessionStore = sessionStore;
+  public constructor(stores: StoresGroup) {
+    this.stores = stores;
   }
 
   public setGroup(group: Group) {
@@ -107,7 +105,7 @@ export class EventFactoryImpl implements EventFactory {
       url: getCanonicalUrl(),
     };
 
-    const campaign = getUtmCampaign(location?.search, this.cookiesStore);
+    const campaign = getUtmCampaign(location?.search, this.stores);
     if (campaign) {
       ctx.campaign = campaign;
     }
@@ -131,7 +129,7 @@ export class EventFactoryImpl implements EventFactory {
       timestamp: new Date(),
     };
 
-    const sessionId = this.sessionStore.get<string>(SESSION_ID_PERSISTENCE_KEY);
+    const sessionId = this.stores.get<string>(SESSION_ID_PERSISTENCE_KEY);
     if (sessionId) {
       body.session = {
         id: sessionId,

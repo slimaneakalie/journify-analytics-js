@@ -1,6 +1,6 @@
 import { Buffer } from "buffer";
 import { UtmCampaign } from "../domain/event";
-import { Store } from "../store/store";
+import { StoresGroup } from "../store/store";
 
 export function isOffline(): boolean {
   return !isOnline();
@@ -39,24 +39,15 @@ export function getCanonicalUrl(): string {
 
 export function getUtmCampaign(
   queryString: string,
-  cookiesStore: Store
+  stores: StoresGroup
 ): UtmCampaign | undefined {
   const utm: UtmCampaign = {};
   const sParams = new URLSearchParams(queryString);
-  const keys: [string, keyof UtmCampaign][] = [
-    ["utm_id", "id"],
-    ["utm_campaign", "name"],
-    ["utm_source", "source"],
-    ["utm_medium", "medium"],
-    ["utm_term", "term"],
-    ["utm_content", "content"],
-  ];
-
   let campaignFound = false;
 
-  keys.forEach((k) => {
+  UTM_KEYS.forEach((k) => {
     const paramName = k[0];
-    const param = getUtmParam(paramName, sParams, cookiesStore);
+    const param = getUtmParam(paramName, sParams, stores);
     if (param) {
       const fieldName = k[1];
       campaignFound = true;
@@ -67,17 +58,31 @@ export function getUtmCampaign(
   return campaignFound ? utm : undefined;
 }
 
+export const UTM_KEYS: [string, keyof UtmCampaign][] = [
+  ["utm_id", "id"],
+  ["utm_campaign", "name"],
+  ["utm_source", "source"],
+  ["utm_medium", "medium"],
+  ["utm_term", "term"],
+  ["utm_content", "content"],
+];
+
 function getUtmParam(
   paramName: string,
   sParams: URLSearchParams,
-  cookiesStore: Store
+  stores: StoresGroup
 ): string | null {
-  const value = sParams.get(paramName);
+  let value: string = stores.get(paramName);
   if (value) {
     return value;
   }
 
-  return cookiesStore.get(paramName);
+  value = sParams.get(paramName);
+  if (value) {
+    stores.set(paramName, value);
+  }
+
+  return value;
 }
 
 function canonical(): string | null {

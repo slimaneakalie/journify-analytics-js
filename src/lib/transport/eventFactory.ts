@@ -102,8 +102,10 @@ export class EventFactoryImpl implements EventFactory {
       path: getCanonicalPath(),
       url: getCanonicalUrl(),
     };
-
-    ctx.campaign = getUtmCampaign(location?.search, this.cookiesStore);
+    const campaign = getUtmCampaign(location?.search, this.cookiesStore);
+    if (campaign) {
+      ctx.campaign = campaign;
+    }
 
     if (!ctx.locale) {
       ctx.locale = navigator

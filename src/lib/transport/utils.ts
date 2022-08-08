@@ -40,7 +40,7 @@ export function getCanonicalUrl(): string {
 export function getUtmCampaign(
   queryString: string,
   cookiesStore: Store
-): UtmCampaign {
+): UtmCampaign | undefined {
   const utm: UtmCampaign = {};
   const sParams = new URLSearchParams(queryString);
   const keys: [string, keyof UtmCampaign][] = [
@@ -52,16 +52,19 @@ export function getUtmCampaign(
     ["utm_content", "content"],
   ];
 
+  let campaignFound = false;
+
   keys.forEach((k) => {
     const paramName = k[0];
     const param = getUtmParam(paramName, sParams, cookiesStore);
     if (param) {
       const fieldName = k[1];
+      campaignFound = true;
       utm[fieldName] = param;
     }
   });
 
-  return utm;
+  return campaignFound ? utm : undefined;
 }
 
 function getUtmParam(

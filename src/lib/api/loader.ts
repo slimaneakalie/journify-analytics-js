@@ -3,7 +3,7 @@ import {
   AnalyticsDependencies,
   AnalyticsSettings,
 } from "./analytics";
-import { BrowserStore } from "../store/localStorage";
+import { BrowserStore } from "../store/browserStore";
 import { NullStore } from "../store/nullStore";
 import { Cookies } from "../store/cookies";
 import { MemoryStore } from "../store/memoryStore";

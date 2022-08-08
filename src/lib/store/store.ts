@@ -1,4 +1,4 @@
-import { BrowserStore } from "./localStorage";
+import { BrowserStore } from "./browserStore";
 import { Cookies } from "./cookies";
 import { MemoryStore } from "./memoryStore";
 import { NullStore } from "./nullStore";

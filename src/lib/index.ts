@@ -1,4 +1,6 @@
-import { Journify } from "./api/journify";
 import { AnalyticsSettings } from "./api/analytics";
+import { load } from "./api/loader";
 
-export { Journify, AnalyticsSettings };
+export { AnalyticsSettings };
+
+export default load;

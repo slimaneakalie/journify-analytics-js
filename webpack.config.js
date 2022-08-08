@@ -18,7 +18,7 @@ const config = {
     path: PATHS.bundles,
     filename: "[name].js",
     library: {
-      name: "journifyio",
+      name: "journify",
       type: "window",
     },
   },

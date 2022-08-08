@@ -25,7 +25,7 @@ pnpm add @journifyio/analytics
 2. Import the package into your project and you're good to go (with working types)!
 
 ```ts
-import { Journify } from "@journifyio/analytics";
+import * as Journify from "@journifyio/analytics";
 
 const analytics = Journify.load({ writeKey: '<YOUR_WRITE_KEY>' })
 
@@ -44,7 +44,7 @@ document.body?.addEventListener('click', () => {
 2. Start tracking inside the page:
 ```html
 <script>
-    const analytics = window.journifyio.Journify.load({ writeKey: '<YOUR_WRITE_KEY>'});
+    const analytics = journify.load({ writeKey: '<YOUR_WRITE_KEY>'});
 
     analytics.track('Order completed', {
         email: "user-1@mail.com",

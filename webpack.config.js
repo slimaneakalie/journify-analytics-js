@@ -19,7 +19,7 @@ const config = {
     filename: "[name].js",
     library: {
       name: "journify",
-      type: "umd",
+      type: "var",
       export: "default",
     },
   },

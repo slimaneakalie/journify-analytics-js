@@ -19,7 +19,7 @@ const config = {
     filename: "[name].js",
     library: {
       name: "journify",
-      type: "var",
+      type: "this",
       export: "default",
     },
   },

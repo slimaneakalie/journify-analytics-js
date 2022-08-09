@@ -1,4 +1,4 @@
-import { Emitter, EmitterImpl } from "../emitter";
+import { EmitterImpl } from "../emitter";
 import { createAndBindCallbacks } from "../../../test/helpers/emitter";
 
 describe("EmitterImpl class", () => {

@@ -79,7 +79,7 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     try {
       const deliveredCtx = await this.runPlugins(ctxToDeliver);
       this.emit(FLUSH_EVENT_NAME, deliveredCtx, true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       this.handleFlushError(ctxToDeliver, err);
     }
   }
@@ -107,7 +107,7 @@ export class EventQueueImpl extends EmitterImpl implements EventQueue {
     return hook.apply(plugin, [ctxToDeliver]);
   }
 
-  private handleFlushError(ctxToDeliver: Context, err: any) {
+  private handleFlushError(ctxToDeliver: Context, err: unknown) {
     const retryAccepted = this.pQueue.pushWithBackoff(ctxToDeliver);
     if (!retryAccepted) {
       ctxToDeliver.setFailedDelivery({ reason: err });

@@ -4,7 +4,6 @@ import { User } from "../../domain/user";
 import { Traits } from "../../domain/traits";
 import { JournifyEvent } from "../../domain/event";
 import { LIB_VERSION } from "../../generated/libVersion";
-import { MemoryStore } from "../../store/memoryStore";
 import { StoresGroup } from "../../store/store";
 import { createStoresForTest } from "../../../test/helpers/stores";
 
@@ -112,7 +111,7 @@ describe("EventFactoryImpl class", () => {
         Object.keys(expectedEvent).length + dynamicKeys.length;
       expect(Object.keys(actualEvent)).toHaveLength(expectedKeysLength);
 
-      for (let key in actualEvent) {
+      for (const key in actualEvent) {
         if (dynamicKeys.includes(key)) {
           expect(actualEvent[key]).toBeDefined();
           expect(actualEvent[key]).not.toBeNull();

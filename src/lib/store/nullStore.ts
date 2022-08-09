@@ -1,7 +1,9 @@
-import { MemoryStore } from "./memoryStore";
+import { Store } from "./store";
 
-export class NullStore extends MemoryStore {
-  public get = (_key: string): null => null;
-  public set = (_key: string, _val: unknown): null => null;
-  public remove = (_key: string): void => {};
+export class NullStore implements Store {
+  public get = (): null => null;
+  public set = (): null => null;
+  public remove = (): void => {
+    return;
+  };
 }

@@ -1,6 +1,5 @@
 import { EventQueue } from "../../lib/transport/queue";
 import { Context } from "../../lib/transport/context";
-import { Traits } from "../../lib/domain/traits";
 
 export class EventQueueMock implements EventQueue {
   public funcs: EventQueueMockFuncs;

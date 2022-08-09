@@ -1,10 +1,19 @@
 commit_message=$(git show --no-patch --format=%B)
 
 # shellcheck disable=SC2076
+new_version="false"
 if [[ $commit_message =~ '\[MAJOR\]\ .+' ]]; then
   npm run major-version
+  new_version="true"
 elif [[ $commit_message =~ '\[MINOR\]\ .+' ]]; then
   npm run minor-version
+  new_version="true"
 elif [[ $commit_message =~ '\[PATCH\]\ .+' ]]; then
   npm run patch-version
+  new_version="true"
+fi
+
+if [[ new_version == "true" ]]; then
+    current_version=$(node -p "require('./package.json').version")
+    git tag -a v$current_version -m $commit_message
 fi

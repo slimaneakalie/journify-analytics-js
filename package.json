@@ -18,14 +18,15 @@
     "analytics"
   ],
   "scripts": {
-    "build": "npm run clean && npm run update-version && npm run lint && tsc && tsc -m es6 --outDir dist/lib/es6 && webpack",
-    "clean": "shx rm -rf dist",
-    "test": "jest",
-    "lint": "eslint . --ext .ts",
+    "setup": "cp scripts/githooks/* .git/hooks/ && chmod +x .git/hooks/*",
+    "build": "npm run setup && npm run clean && npm run update-version && npm run lint && tsc && tsc -m es6 --outDir dist/lib/es6 && webpack",
+    "clean": "npm run setup && shx rm -rf dist",
+    "test": "npm run setup && jest",
+    "lint": "npm run setup && eslint . --ext .ts",
+    "update-version": "npm run setup && sh scripts/update-version-var.sh",
     "major-version": "npm version major && npm run update-version && git commit -am 'update version to major'",
     "minor-version": "npm version minor && npm run update-version && git commit -am 'update version to minor'",
-    "patch-version": "npm version patch && npm run update-version && git commit -am 'update version to patch'",
-    "update-version": "sh scripts/update-version-var.sh"
+    "patch-version": "npm version patch && npm run update-version && git commit -am 'update version to patch'"
   },
   "dependencies": {
     "@lukeed/uuid": "^2.0.0",

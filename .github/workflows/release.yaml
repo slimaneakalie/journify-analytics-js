@@ -14,26 +14,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Version
-        uses: paulhatch/semantic-version@v4.0.2
-        id: version
-        with:
-          tag_prefix: v
-
-      - name: Tag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: ${{ steps.version.outputs.version_tag }}
-
       - name: Publish
-        if: ${{ steps.version.outputs.version_tag }} != ''
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          tag: ${{ steps.version.outputs.version_tag }}
           access: public

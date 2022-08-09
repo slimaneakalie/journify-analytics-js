@@ -19,14 +19,13 @@
   ],
   "scripts": {
     "build": "npm run clean && npm run update-version && npm run lint && tsc && tsc -m es6 --outDir dist/lib/es6 && webpack",
-    "release": "npm run test && npm run build && npm publish --access=public",
     "clean": "shx rm -rf dist",
     "test": "jest",
     "lint": "eslint . --ext .ts",
-    "update-version": "sh scripts/update-version-var.sh",
-    "patch-version": "npm version patch && npm run update-version && git commit -am 'update version' && git push",
-    "minor-version": "npm version minor && npm run update-version && git commit -am 'update version' && git push",
-    "major-version": "npm version major && npm run update-version && git commit -am 'update version' && git push"
+    "major-version": "npm version major && npm run update-version && git commit -am 'update version to major'",
+    "minor-version": "npm version minor && npm run update-version && git commit -am 'update version to minor'",
+    "patch-version": "npm version patch && npm run update-version && git commit -am 'update version to patch'",
+    "update-version": "sh scripts/update-version-var.sh"
   },
   "dependencies": {
     "@lukeed/uuid": "^2.0.0",
@@ -50,6 +49,5 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
-  },
-
+  }
 }

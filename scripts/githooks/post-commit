@@ -1,19 +1,25 @@
 commit_message=$(git show --no-patch --format=%B)
 
+echo "post-commit hook invoked for message $commit_message"
+
 # shellcheck disable=SC2076
 new_version="false"
 if [[ $commit_message =~ '\[MAJOR\]\ .+' ]]; then
-  npm run major-version
-  new_version="true"
+    echo "post-commit hook: MAJOR match"
+    npm run major-version
+    new_version="true"
 elif [[ $commit_message =~ '\[MINOR\]\ .+' ]]; then
-  npm run minor-version
-  new_version="true"
+    echo "post-commit hook: MINOR match"
+    npm run minor-version
+    new_version="true"
 elif [[ $commit_message =~ '\[PATCH\]\ .+' ]]; then
-  npm run patch-version
-  new_version="true"
+    echo "post-commit hook: PATCH match"
+    npm run patch-version
+    new_version="true"
 fi
 
 if [[ new_version == "true" ]]; then
     current_version=$(node -p "require('./package.json').version")
+    echo "post-commit hook: git tagging for version $current_version"
     git tag -a v$current_version -m $commit_message
 fi

@@ -57,22 +57,14 @@ jobs:
             git push -u origin HEAD
           fi
 
-      - name: Lint, Build & Test
-        run: | 
-          npm run lint
-          if [[ $? -ne 0 ]]; then
-            exit 1
-          fi
-          
-          npm run build
-          if [[ $? -ne 0 ]]; then
-            exit 1
-          fi
-          
-          npm run test
-          if [[ $? -ne 0 ]]; then
-            exit 1
-          fi
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
 
       - name: Publish
         if: steps.update_version.outputs.publish == 'true'

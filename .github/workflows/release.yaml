@@ -37,7 +37,10 @@ jobs:
           new_release_regex='(\[MAJOR\]|\[MINOR\]|\[PATCH\])\ .+'
           
           if [[ $pull_request_title =~ $new_release_regex ]]; then
+            current_version=$(node -p "require('./package.json').version")
+            tag_name="v$current_version"
             echo "::set-output name=new_release::true"
+            echo "::set-output name=tag_name::$tag_name"
           fi
 
       - name: Publish
@@ -51,5 +54,5 @@ jobs:
         if: steps.release_check.outputs.new_release == 'true'
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.update_version.outputs.tagName }}
+          tag: ${{ steps.release_check.outputs.tag_name }}
           token: ${{ secrets.GITHUB_TOKEN }}

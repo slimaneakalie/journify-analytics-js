@@ -1,2 +1,2 @@
 // This file is generated.
-export const LIB_VERSION = '0.0.64'
+export const LIB_VERSION = '0.0.65'

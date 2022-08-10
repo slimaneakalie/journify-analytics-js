@@ -72,9 +72,15 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish
+      - name: Publish to npm
         if: steps.update_version.outputs.publish == 'true'
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
           access: public
+
+      - name: Release to Github
+        if: steps.update_version.outputs.publish == 'true'
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.YOUR_GITHUB_TOKEN }}

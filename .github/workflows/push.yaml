@@ -15,7 +15,7 @@ jobs:
           node-version: 16
 
       - name: Install modules
-        run: yan install
+        run: yarn install
 
       - name: Lint
         run: npm run lint

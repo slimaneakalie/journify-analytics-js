@@ -1,5 +1,7 @@
 commit_message=$(git show --no-patch --format=%B)
 
+echo "post-commit hook invoked for commit ($commit_message)"
+
 majorRegex='\[MAJOR\]\ .+'
 minorRegex='\[MINOR\]\ .+'
 patchRegex='\[PATCH\]\ .+'

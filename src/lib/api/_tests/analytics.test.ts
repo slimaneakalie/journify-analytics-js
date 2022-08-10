@@ -20,7 +20,7 @@ import {
   EventQueueMock,
   EventQueueMockFuncs,
 } from "../../../test/mocks/eventQueue";
-import { Context, ContextFactory } from "../../transport/context";
+import { Context } from "../../transport/context";
 import {
   ContextFactoryFuncs,
   ContextFactoryMock,

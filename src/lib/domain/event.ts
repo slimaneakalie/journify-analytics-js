@@ -35,7 +35,7 @@ interface EventContext {
   locale?: string;
   page?: Page;
   campaign?: UtmCampaign;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface Page {

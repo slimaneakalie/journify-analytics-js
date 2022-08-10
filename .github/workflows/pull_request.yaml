@@ -31,7 +31,6 @@ jobs:
         id: update_version
         run: |
           pull_request_title="${{ github.event.pull_request.title }}"
-          echo "github.head_ref: ${{ github.head_ref }}"
           new_version_regex='(\[MAJOR\]|\[MINOR\]|\[PATCH\])\ .+'
           new_version="false"
           
@@ -40,6 +39,8 @@ jobs:
             major_regex='\[MAJOR\]\ .+'
             minor_regex='\[MINOR\]\ .+'
             patch_regex='\[PATCH\]\ .+'
+          
+            git checkout ${{ github.head_ref }}
           
             if [[ $pull_request_title =~ $major_regex ]]; then
               npm run major-version
@@ -54,7 +55,7 @@ jobs:
             current_version=$(node -p "require('./package.json').version")
             tag_name="v$current_version"
           
-            git push -u origin "${{ github.head_ref }}"
+            git push
           
             git tag -a $tag_name -m "New version $tag_name"
             git push origin $tag_name

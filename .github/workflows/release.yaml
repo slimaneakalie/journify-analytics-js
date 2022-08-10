@@ -29,7 +29,7 @@ jobs:
       - name: Update version
         id: update_version
         run: |
-          pull_request_title=${{ github.event.pull_request.title }}
+          pull_request_title="${{ github.event.pull_request.title }}"
           echo "PR title: $pull_request_title"
           
           majorRegex='\[MAJOR\]\ .+'

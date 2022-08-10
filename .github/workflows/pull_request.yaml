@@ -9,7 +9,7 @@ on:
       - edited
 
 jobs:
-  release:
+  versioning:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

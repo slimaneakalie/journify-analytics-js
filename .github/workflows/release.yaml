@@ -52,11 +52,12 @@ jobs:
           if [[ $new_version == "true" ]]; then
             current_version=$(node -p "require('./package.json').version")
             tagName="v$current_version"
-            
-            git tag -a $tagName -m "New version $tagName"
-            git push origin $tagName
+          
             git push -u origin HEAD
           
+            git tag -a $tagName -m "New version $tagName"
+            git push origin $tagName
+
             echo "::set-output name=publish::true"
           fi
 

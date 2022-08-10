@@ -78,4 +78,5 @@ jobs:
         if: steps.update_version.outputs.publish == 'true'
         uses: ncipollo/release-action@v1
         with:
+          tag: ${{ steps.update_version.outputs.tagName }}
           token: ${{ secrets.GITHUB_TOKEN }}

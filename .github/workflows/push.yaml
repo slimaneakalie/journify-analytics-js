@@ -1,12 +1,7 @@
-name: Pull requests
-
-on:
-  pull_request:
-    branches:
-      - "**"
-
+name: Push
+on: push
 jobs:
-  pull_request:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,6 +13,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+
+      - name: Install modules
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
 
       - name: Test
         run: npm run test

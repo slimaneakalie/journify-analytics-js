@@ -1,12 +1,14 @@
 name: Automatic tag and release
 
 on:
-  push:
+  pull_request:
     branches:
-      - master
+      - main
+    types: [closed]
 
 jobs:
   release:
+    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -14,7 +16,50 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: 16
+
+      - name: Update version
+        id: update_version
+        run: |
+          pull_request_title=${{ github.event.pull_request.title }}
+          echo "PR title: $pull_request_title"
+          
+          majorRegex='\[MAJOR\]\ .+'
+          minorRegex='\[MINOR\]\ .+'
+          patchRegex='\[PATCH\]\ .+'
+          new_version="false"
+          
+          if [[ $pull_request_title =~ $majorRegex ]]; then
+            echo "Major version match"
+            npm run major-version
+            new_version="true"
+          elif [[ $pull_request_title =~ $minorRegex ]]; then
+            echo "Minor version match"
+            npm run minor-version
+            new_version="true"
+          elif [[ $pull_request_title =~ $patchRegex ]]; then
+            echo "Patch version match"
+            npm run patch-version
+            new_version="true"
+          fi
+          if [[ $new_version == "true" ]]; then
+            current_version=$(node -p "require('./package.json').version")
+            echo "::set-output name=publish::true"
+            git tag -a v$current_version -m "New version v$current_version"
+            git push -u origin HEAD
+          fi
+
+      - name: Lint, Build & Test
+        run: | 
+          npm run lint
+          npm run build
+          npm run test
+
       - name: Publish
+        if: steps.update_version.outputs.publish == 'true'
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}

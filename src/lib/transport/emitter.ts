@@ -1,5 +1,5 @@
 export interface Emitter {
-  on(event: string, callback: Function): Emitter;
+  on(event: string, callback: Callback): Emitter;
   once(event: string, fn: Callback): Emitter;
   off(event: string, callback: Callback): Emitter;
   emit(event: string, ...args: unknown[]): Emitter;

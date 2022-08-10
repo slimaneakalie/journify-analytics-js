@@ -77,5 +77,11 @@ jobs:
       - name: Release to Github
         if: steps.update_version.outputs.publish == 'true'
         uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           token: ${{ secrets.YOUR_GITHUB_TOKEN }}
+          draft: false
+          prerelease: false

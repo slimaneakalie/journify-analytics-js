@@ -57,13 +57,10 @@ jobs:
             git push -u origin HEAD
           fi
 
-      - name: Lint
-        run: npm run lint
-
       - name: Test
         run: npm run test
 
-      - name: Build
+      - name: Build & Lint
         run: npm run build
 
       - name: Publish

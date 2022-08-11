@@ -1,10 +1,15 @@
 import { JPlugin } from "../../lib/transport/plugins/plugin";
 import { Context } from "../../lib/transport/context";
+import { AnalyticsSettings } from "../../lib";
 
 export class JPluginMock implements JPlugin {
   private funcs: JPluginMockFuncs;
   public constructor(funcs: JPluginMockFuncs) {
     this.funcs = funcs;
+  }
+
+  public updateSettings(settings: AnalyticsSettings): void {
+    return this.funcs?.updateSettings(settings);
   }
 
   public identify(ctx: Context): Promise<Context> | Context {
@@ -25,6 +30,7 @@ export class JPluginMock implements JPlugin {
 }
 
 export interface JPluginMockFuncs {
+  updateSettings?: jest.Func;
   identify?: jest.Func;
   track?: jest.Func;
   page?: jest.Func;

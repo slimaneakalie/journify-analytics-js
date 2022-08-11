@@ -64,4 +64,4 @@ To publish a new version, you need to add a prefix to your pull request title fo
 * **[MINOR]:** \{Pull request title\}
 * **[PATCH]:** \{Pull request title\}
 
-Once your PR is merged and the CI pipelines is passed, your code will be published to npm.
+Once your PR is merged and the CI pipeline is passed, your code will be published to npm.

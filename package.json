@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "setup": "cp scripts/githooks/* .git/hooks/ && chmod +x .git/hooks/*",
-    "build": "npm run setup && npm run clean && npm run update-version && npm run lint && tsc && tsc -m es6 --outDir dist/lib/es6 && webpack",
+    "build": "npm run setup && npm run clean && npm run update-version && npm run lint && npm run test && tsc && tsc -m es6 --outDir dist/lib/es6 && webpack",
     "clean": "shx rm -rf dist",
     "test": "jest",
     "lint": "eslint . --ext .ts",

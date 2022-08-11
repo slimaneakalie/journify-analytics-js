@@ -18,53 +18,82 @@ import { GroupFactoryImpl } from "../domain/group";
 import { StoresGroup } from "../store/store";
 import { BrowserStore } from "../store/browserStore";
 import { UTM_KEYS } from "../transport/utils";
+import { clearInterval } from "timers";
 
-export function load(settings: AnalyticsSettings): Analytics {
-  const localStore = new BrowserStore(localStorage);
-  const cookiesStore = Cookies.isAvailable() ? new Cookies() : new NullStore();
-  const memoryStore = new MemoryStore();
-  const stores = new StoresGroup(localStore, cookiesStore, memoryStore);
+export class Loader {
+  private analytics: Analytics = null;
+  private plugins: JPlugin[];
+  private sessionIntervalId: NodeJS.Timer = null;
+  private stores: StoresGroup = null;
 
-  startSession(
-    stores,
-    settings.sessionDurationMin ?? DEFAULT_SESSION_DURATION_MIN
-  );
+  public load(settings: AnalyticsSettings): Analytics {
+    if (!this.analytics) {
+      this.initAnalytics(settings);
+    } else {
+      this.startSession(settings.sessionDurationMin);
+      this.plugins?.forEach((plugin) => plugin.updateSettings(settings));
+    }
 
-  const plugins: JPlugin[] = [new JournifyioPlugin(settings)];
-  const pQueue = new OperationsPriorityQueueImpl<Context>(
-    DEFAULT_MAX_QUEUE_ATTEMPTS
-  );
-  const deps: AnalyticsDependencies = {
-    userFactory: new UserFactoryImpl(stores),
-    groupFactory: new GroupFactoryImpl(stores),
-    eventFactory: new EventFactoryImpl(stores),
-    contextFactory: new ContextFactoryImpl(),
-    eventQueue: new EventQueueImpl(plugins, pQueue),
-  };
+    return this.analytics;
+  }
 
-  const analytics = new Analytics(settings, deps);
-  return analytics;
-}
+  private initAnalytics(settings: AnalyticsSettings) {
+    this.startSession(settings.sessionDurationMin);
 
-export const SESSION_ID_PERSISTENCE_KEY = "journifyio_session_id";
+    this.plugins = [new JournifyioPlugin(settings)];
+    const pQueue = new OperationsPriorityQueueImpl<Context>(
+      DEFAULT_MAX_QUEUE_ATTEMPTS
+    );
+    const deps: AnalyticsDependencies = {
+      userFactory: new UserFactoryImpl(this.stores),
+      groupFactory: new GroupFactoryImpl(this.stores),
+      eventFactory: new EventFactoryImpl(this.stores),
+      contextFactory: new ContextFactoryImpl(),
+      eventQueue: new EventQueueImpl(this.plugins, pQueue),
+    };
 
-function startSession(stores: StoresGroup, sessionDurationMin: number) {
-  const currentEpoch = new Date().getTime();
-  if (!stores.get(SESSION_ID_PERSISTENCE_KEY)) {
-    stores.set(SESSION_ID_PERSISTENCE_KEY, currentEpoch);
+    this.analytics = new Analytics(settings, deps);
+  }
 
-    setInterval(() => {
-      const newSessionId = new Date().getTime();
-      stores.set(SESSION_ID_PERSISTENCE_KEY, newSessionId);
+  private initStores() {
+    if (this.stores) {
+      return;
+    }
 
-      resetUtmCampaign(stores);
-    }, sessionDurationMin * 60 * 1000);
+    const localStore = new BrowserStore(localStorage);
+    const cookiesStore = Cookies.isAvailable()
+      ? new Cookies()
+      : new NullStore();
+    const memoryStore = new MemoryStore();
+    this.stores = new StoresGroup(localStore, cookiesStore, memoryStore);
+  }
+
+  private startSession(sessionDurationMin = DEFAULT_SESSION_DURATION_MIN) {
+    this.initStores();
+
+    if (this.sessionIntervalId) {
+      clearInterval(this.sessionIntervalId);
+    }
+
+    const currentEpoch = new Date().getTime();
+    if (!this.stores.get(SESSION_ID_PERSISTENCE_KEY)) {
+      this.stores.set(SESSION_ID_PERSISTENCE_KEY, currentEpoch);
+
+      this.sessionIntervalId = setInterval(() => {
+        const newSessionId = new Date().getTime();
+        this.stores.set(SESSION_ID_PERSISTENCE_KEY, newSessionId);
+
+        this.resetUtmCampaign();
+      }, sessionDurationMin * 60 * 1000);
+    }
+  }
+
+  private resetUtmCampaign() {
+    UTM_KEYS.forEach((key) => this.stores.remove(key[0]));
   }
 }
 
-function resetUtmCampaign(stores: StoresGroup) {
-  UTM_KEYS.forEach((key) => stores.remove(key[0]));
-}
+export const SESSION_ID_PERSISTENCE_KEY = "journifyio_session_id";
 
 const DEFAULT_MAX_QUEUE_ATTEMPTS = 5;
 const DEFAULT_SESSION_DURATION_MIN = 30;

@@ -12,6 +12,10 @@ export class JournifyioPlugin implements JPlugin {
     this.analyticsSettings = analyticsSettings;
   }
 
+  public updateSettings(settings: AnalyticsSettings) {
+    this.analyticsSettings = settings;
+  }
+
   public identify = this.post;
   public track = this.post;
   public page = this.post;

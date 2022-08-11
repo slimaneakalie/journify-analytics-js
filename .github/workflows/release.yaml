@@ -24,10 +24,7 @@ jobs:
       - name: Install modules
         run: yarn install
 
-      - name: Test
-        run: npm run test
-
-      - name: Build & Lint
+      - name: Build, Lint & Test
         run: npm run build
 
       - name: Check for a potential new release

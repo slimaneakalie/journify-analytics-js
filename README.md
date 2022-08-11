@@ -27,12 +27,12 @@ pnpm add @journifyio/analytics
 ```ts
 import * as Journify from "@journifyio/analytics";
 
-const analytics = Journify.load({ writeKey: '<YOUR_WRITE_KEY>' })
+Journify.load({ writeKey: '<YOUR_WRITE_KEY>' })
 
-analytics.identify('user-id-1', {email: "user-1@mail.com"})
+Journify.identify('user-id-1', {email: "user-1@mail.com"})
 
 document.body?.addEventListener('click', () => {
-  analytics.track('document body clicked!')
+    Journify.track('document body clicked!')
 })
 ```
 
@@ -44,9 +44,10 @@ document.body?.addEventListener('click', () => {
 2. Start tracking inside the page:
 ```html
 <script>
-    const analytics = journify.load({ writeKey: '<YOUR_WRITE_KEY>'});
+    const journify = window.journify
+    journify.load({ writeKey: '<YOUR_WRITE_KEY>'});
 
-    analytics.track('Order completed', {
+    journify.track('Order completed', {
         email: "user-1@mail.com",
         value: 1000,
     })
@@ -54,3 +55,13 @@ document.body?.addEventListener('click', () => {
     .catch((err) => console.log("Order event tracking encountered some errors: ", err));
 </script>
 ```
+
+# Contributing
+You can contribute to Journify JavaScript SDK by forking the repo and making pull requests on the `main` branch.
+
+To publish a new version, you need to add a prefix to your pull request title following the [semantic versioning spec](https://semver.org/):
+* **[MAJOR]:** \{Pull request title\}
+* **[MINOR]:** \{Pull request title\}
+* **[PATCH]:** \{Pull request title\}
+
+Once your PR is merged and the CI pipelines is passed, your code will be published to npm.

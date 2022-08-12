@@ -37,22 +37,17 @@ document.body?.addEventListener('click', () => {
 ```
 
 ## Using in html page
-1. Add the following script tag at the top of your `<head>`:
-```html
-<script src="https://unpkg.com/@journifyio/analytics@latest/dist/_bundles/journifyio.min.js"></script>
-```
-2. Start tracking inside the page:
+Add the following script tag at the top of your `<head>`:
 ```html
 <script>
-    const journify = window.journify
-    journify.load({ writeKey: '<YOUR_WRITE_KEY>'});
-
-    journify.track('Order completed', {
-        email: "user-1@mail.com",
-        value: 1000,
-    })
-    .then(() => console.log('Order event tracked with success'))
-    .catch((err) => console.log("Order event tracking encountered some errors: ", err));
+    !(function () {var journify = (window.journify = window.journify || []);var localJournify; if (!journify.load) { if (journify.invoked) { console.error("Journify snippet included twice."); } else { journify.invoked = !0; journify.methods = ["track", "identify", "group", "track", "page"]; journify.factory = function (methodName) { return function () { var callArgs = Array.prototype.slice.call(arguments); callArgs.unshift(methodName); journify.push(callArgs); return journify }; }; for (var i = 0; i < journify.methods.length; i++) { var methodName = journify.methods[i]; journify[methodName] = journify.factory(methodName); } journify.load = function (loadSettings) { var script = document.createElement("script"); script.type = "text/javascript"; script.async = !0; script.src = "https://unpkg.com/@journifyio/analytics@latest/dist/_bundles/journifyio.min.js"; localJournify = journify; script.onload = function () { window.journify.load(loadSettings); for (var i = 0; i < localJournify.length; i++) { var callArgs = localJournify[i]; var methodName = callArgs.shift(); if (!window.journify[methodName]) return; window.journify[methodName].apply(this, callArgs); } }; var firstScript = document.getElementsByTagName("script")[0]; firstScript.parentNode.insertBefore(script, firstScript); };
+        journify.load({ writeKey: "<YOUR_WRITE_KEY>" });
+        journify.page();
+        journify.track('Order completed', {
+            email: "user-1@mail.com",
+            value: 1000,
+        })
+    }}})();
 </script>
 ```
 

@@ -24,15 +24,12 @@ export class JournifyioPlugin implements JPlugin {
   private async post(ctx: Context): Promise<Context> {
     const apiHost = this.analyticsSettings.apiHost ?? DEFAULT_API_HOST;
     const event = ctx.getEvent();
-    const eventUrl = `${apiHost}/v1/${event.type}`;
-    const token = `Basic ${encodeBase64(this.analyticsSettings.writeKey)}`;
-
+    const eventUrl = `${apiHost}/v1/${event.type?.charAt(0)}`;
     const response = await fetch(eventUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "analytics-node-next/latest",
-        Authorization: token,
+        Authorization: this.analyticsSettings.writeKey,
       },
       body: JSON.stringify(event),
     });

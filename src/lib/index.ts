@@ -2,6 +2,7 @@ import { Loader } from "./api/loader";
 import { Analytics, AnalyticsSettings } from "./api/analytics";
 import { Traits } from "./domain/traits";
 import { Context } from "./transport/context";
+import { ExternalId } from "./domain/event";
 
 const loader: Loader = new Loader();
 let analytics: Analytics = null;
@@ -10,9 +11,9 @@ function load(settings: AnalyticsSettings) {
   analytics = loader.load(settings);
 }
 
-async function identify(userId: string, traits?: Traits): Promise<Context> {
+async function identify(userId: string, traits?: Traits, externalId?: ExternalId): Promise<Context> {
   checkForLoad();
-  return analytics.identify(userId, traits);
+  return analytics.identify(userId, traits, externalId);
 }
 
 async function track(eventName: string, properties?: object): Promise<Context> {
@@ -32,9 +33,7 @@ async function group(groupId: string, traits?: Traits): Promise<Context> {
 
 function checkForLoad() {
   if (!analytics) {
-    console.log(
-      "Analytics is not loaded, you should call the `load` function before attempting to call any other helper"
-    );
+    throw new Error( "Analytics is not loaded, you should call the `load` function before attempting to call any other helper")
   }
 }
 

@@ -3,6 +3,7 @@ import { JSONValue, Traits } from "./traits";
 export interface JournifyEvent {
   messageId?: string;
   type: "track" | "page" | "identify" | "group" | "screen";
+  externalId?: ExternalId;
   userId?: string;
   groupId?: string;
   anonymousId?: string;
@@ -15,6 +16,12 @@ export interface JournifyEvent {
   properties?: object & {
     [k: string]: JSONValue;
   };
+}
+
+export interface ExternalId {
+  id: string;
+  type: string;
+  collection: string;
 }
 
 export interface UtmCampaign {

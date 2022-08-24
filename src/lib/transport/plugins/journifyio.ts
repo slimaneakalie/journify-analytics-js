@@ -1,7 +1,6 @@
 import { JPlugin } from "./plugin";
 import { Context } from "../context";
 import { AnalyticsSettings } from "../../api/analytics";
-import { encodeBase64 } from "../utils";
 
 const DEFAULT_API_HOST = "https://api.journify.io";
 

@@ -45,8 +45,8 @@ export class EventFactoryImpl implements EventFactory {
   public newIdentifyEvent(): JournifyEvent {
     const baseEvent: JournifyEvent = {
       type: "identify" as const,
-      userId: this.user?.getUserId(),
-      groupId: this.group?.getGroupId(),
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.user?.getTraits(),
       externalId: this.user?.getExternalId(),
@@ -63,8 +63,8 @@ export class EventFactoryImpl implements EventFactory {
       type: "track" as const,
       event: eventName,
       properties,
-      userId: this.user?.getUserId(),
-      groupId: this.group?.getGroupId(),
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.user?.getTraits() || this.group?.getTraits(),
       externalId: this.user?.getExternalId(),
@@ -81,8 +81,8 @@ export class EventFactoryImpl implements EventFactory {
       type: "page" as const,
       name: pageName,
       properties,
-      userId: this.user?.getUserId(),
-      groupId: this.group?.getGroupId(),
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.user?.getTraits() || this.group?.getTraits(),
       externalId: this.user?.getExternalId(),
@@ -94,8 +94,8 @@ export class EventFactoryImpl implements EventFactory {
   public newGroupEvent(): JournifyEvent {
     const baseEvent: JournifyEvent = {
       type: "group" as const,
-      userId: this.user?.getUserId(),
-      groupId: this.group?.getGroupId(),
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.group?.getTraits(),
       externalId: this.user?.getExternalId(),

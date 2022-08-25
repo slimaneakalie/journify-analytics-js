@@ -15,7 +15,7 @@ import {
   EventFactoryFuncs,
   EventFactoryMock,
 } from "../../../test/mocks/eventFactory";
-import { JournifyEvent } from "../../domain/event";
+import { ExternalId, JournifyEvent } from "../../domain/event";
 import {
   EventQueueMock,
   EventQueueMockFuncs,
@@ -43,6 +43,12 @@ describe("Analytics class", () => {
         location: "Morocco",
       };
 
+      const externalIdByClient: ExternalId = {
+        id: "0938789032",
+        type: "phone",
+        collection: "users",
+      };
+
       const userIdByClient = "user-id-used-by-client";
       const traitsByClient: Traits = {
         email: "example-15267@maily.net",
@@ -57,6 +63,7 @@ describe("Analytics class", () => {
         initialUserId,
         initialAnonymousId,
         initialTraits,
+        externalIdByClient,
         userMockFuncs
       );
       const userFactory: UserFactory = new UserFactoryMock(user);
@@ -122,13 +129,15 @@ describe("Analytics class", () => {
       const analytics = new Analytics(settings, deps);
       const deliveredCtx = await analytics.identify(
         userIdByClient,
-        traitsByClient
+        traitsByClient,
+        externalIdByClient
       );
 
       expect(userMockFuncs.identify).toHaveBeenCalledTimes(1);
       expect(userMockFuncs.identify).toHaveBeenCalledWith(
         userIdByClient,
-        traitsByClient
+        traitsByClient,
+        externalIdByClient
       );
       expect(eventFactoryFuncs.newIdentifyEvent).toHaveBeenCalledTimes(1);
       expect(eventFactoryFuncs.newIdentifyEvent).toHaveBeenCalledWith(user);

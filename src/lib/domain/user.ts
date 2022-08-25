@@ -40,13 +40,16 @@ class UserImpl implements User {
 
   public constructor(stores: StoresGroup) {
     this.stores = stores;
-    this.initUserId();
     this.initAnonymousId();
+    this.initUserId();
     this.initTraits();
     this.initExternalId();
   }
 
   public identify(userId?: string, traits: Traits = {}, externalId?: ExternalId) {
+    this.clearUserData()
+
+    this.initAnonymousId();
     if (userId) {
       this.setUserId(userId);
     }
@@ -55,12 +58,7 @@ class UserImpl implements User {
       this.setExternalId(externalId);
     }
 
-    const newTraits = {
-      ...this.getTraits(),
-      ...traits,
-    };
-
-    this.setTraits(newTraits);
+    this.setTraits(traits);
   }
 
   public getUserId(): string | null {
@@ -77,6 +75,17 @@ class UserImpl implements User {
 
   public getExternalId(): ExternalId | null{
     return this.externalId;
+  }
+
+  private clearUserData() {
+    this.anonymousId = null;
+    this.userId = null;
+    this.externalId = null;
+    this.traits = null;
+    this.stores.remove(ANONYMOUS_ID_PERSISTENCE_KEY)
+    this.stores.remove(USER_ID_PERSISTENCE_KEY)
+    this.stores.remove(EXTERNAL_ID_PERSISTENCE_KEY)
+    this.stores.remove(USER_TRAITS_PERSISTENCE_KEY)
   }
 
   private initUserId() {

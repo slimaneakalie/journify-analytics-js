@@ -13,6 +13,7 @@ function load(settings: AnalyticsSettings) {
 
 async function identify(userId: string, traits?: Traits, externalId?: ExternalId): Promise<Context> {
   checkForLoad();
+  loader.startNewSession();
   return analytics.identify(userId, traits, externalId);
 }
 

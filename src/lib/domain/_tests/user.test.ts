@@ -78,6 +78,38 @@ describe("User interface", () => {
       assertValueOnStores(testStores, "journifyio_user_id", newUserId);
       assertValueOnStores(testStores, "journifyio_user_traits", newTraits);
     });
+
+    it("Should replace the previous traits by the new ones on the stores", () => {
+      const testStores = createStoresForTest();
+      const stores = new StoresGroup(
+        testStores.local,
+        testStores.cookies,
+        testStores.memory
+      );
+
+      const oldTraits = { email: "user-10@gmail.com" };
+      testStores.local.set("journifyio_user_traits", oldTraits);
+
+      const factory = new UserFactoryImpl(stores);
+      const user = factory.loadUser();
+
+      const newTraits = {
+        clicks: 337,
+        location: "Morocco",
+      };
+      user.identify(null, newTraits);
+
+      const expectedStoredTraits = {
+        clicks: 337,
+        location: "Morocco",
+      };
+
+      assertValueOnStores(
+        testStores,
+        "journifyio_user_traits",
+        expectedStoredTraits
+      );
+    });
   });
 
   describe("getUserId method", () => {

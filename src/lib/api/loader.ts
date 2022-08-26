@@ -18,7 +18,6 @@ import { GroupFactoryImpl } from "../domain/group";
 import { StoresGroup } from "../store/store";
 import { BrowserStore } from "../store/browserStore";
 import { UTM_KEYS } from "../transport/utils";
-import { clearInterval } from "timers";
 
 export class Loader {
   private analytics: Analytics = null;
@@ -80,7 +79,8 @@ export class Loader {
     if (!this.stores.get(SESSION_ID_PERSISTENCE_KEY)) {
       this.stores.set(SESSION_ID_PERSISTENCE_KEY, currentEpoch);
 
-      const sessionDurationMin = this.settings.sessionDurationMin || DEFAULT_SESSION_DURATION_MIN;
+      const sessionDurationMin =
+        this.settings.sessionDurationMin || DEFAULT_SESSION_DURATION_MIN;
       this.sessionIntervalId = setInterval(() => {
         const newSessionId = new Date().getTime();
         this.stores.set(SESSION_ID_PERSISTENCE_KEY, newSessionId);

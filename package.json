@@ -24,9 +24,9 @@
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "update-version": "sh scripts/update-version-var.sh",
-    "major-version": "npm --no-git-tag-version version major && npm run build && git commit -am 'update version to major'",
-    "minor-version": "npm --no-git-tag-version version minor && npm run build && git commit -am 'update version to minor'",
-    "patch-version": "npm --no-git-tag-version version patch && npm run build && git commit -am 'update version to patch'"
+    "major-version": "npm --no-git-tag-version version major && npm run update-version && git commit -am 'update version (major)'",
+    "minor-version": "npm --no-git-tag-version version minor && npm run update-version && git commit -am 'update version (minor)'",
+    "patch-version": "npm --no-git-tag-version version patch && npm run update-version && git commit -am 'update version (patch)'"
   },
   "dependencies": {
     "@lukeed/uuid": "^2.0.0",

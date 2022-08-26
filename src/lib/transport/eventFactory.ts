@@ -45,9 +45,11 @@ export class EventFactoryImpl implements EventFactory {
   public newIdentifyEvent(): JournifyEvent {
     const baseEvent: JournifyEvent = {
       type: "identify" as const,
-      userId: this.user.getUserId(),
-      anonymousId: this.user.getAnonymousId(),
-      traits: this.user.getTraits(),
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
+      anonymousId: this.user?.getAnonymousId(),
+      traits: this.user?.getTraits(),
+      externalId: this.user?.getExternalId(),
     };
 
     return this.normalizeEvent(baseEvent);
@@ -60,9 +62,12 @@ export class EventFactoryImpl implements EventFactory {
     const baseEvent: JournifyEvent = {
       type: "track" as const,
       event: eventName,
-      userId: this.user.getUserId(),
-      anonymousId: this.user.getAnonymousId(),
       properties,
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
+      anonymousId: this.user?.getAnonymousId(),
+      traits: this.user?.getTraits() || this.group?.getTraits(),
+      externalId: this.user?.getExternalId(),
     };
 
     return this.normalizeEvent(baseEvent);
@@ -75,9 +80,12 @@ export class EventFactoryImpl implements EventFactory {
     const baseEvent: JournifyEvent = {
       type: "page" as const,
       name: pageName,
-      userId: this.user.getUserId(),
-      anonymousId: this.user.getAnonymousId(),
       properties,
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
+      anonymousId: this.user?.getAnonymousId(),
+      traits: this.user?.getTraits() || this.group?.getTraits(),
+      externalId: this.user?.getExternalId(),
     };
 
     return this.normalizeEvent(baseEvent);
@@ -86,8 +94,11 @@ export class EventFactoryImpl implements EventFactory {
   public newGroupEvent(): JournifyEvent {
     const baseEvent: JournifyEvent = {
       type: "group" as const,
-      groupId: this.group.getGroupId(),
-      traits: this.group.getTraits(),
+      userId: this.user?.getUserId() || null,
+      groupId: this.group?.getGroupId() || null,
+      anonymousId: this.user?.getAnonymousId(),
+      traits: this.group?.getTraits(),
+      externalId: this.user?.getExternalId(),
     };
 
     return this.normalizeEvent(baseEvent);

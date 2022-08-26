@@ -1,15 +1,18 @@
 import { v4 as uuid } from "@lukeed/uuid";
 import { Traits, USER_TRAITS_PERSISTENCE_KEY } from "./traits";
 import { StoresGroup } from "../store/store";
+import { ExternalId } from "./event";
 
 const ANONYMOUS_ID_PERSISTENCE_KEY = "journifyio_anonymous_id";
 const USER_ID_PERSISTENCE_KEY = "journifyio_user_id";
+const EXTERNAL_ID_PERSISTENCE_KEY = "journifyio_external_id";
 
 export interface User {
-  identify(userId?: string, traits?: Traits);
+  identify(userId?: string, traits?: Traits, externalId?: ExternalId);
   getUserId(): string | null;
   getAnonymousId(): string | null;
   getTraits(): Traits | null;
+  getExternalId(): ExternalId | null;
 }
 
 export interface UserFactory {
@@ -32,26 +35,30 @@ class UserImpl implements User {
   private stores: StoresGroup;
   private anonymousId: string;
   private userId: string;
+  private externalId: ExternalId;
   private traits: Traits;
 
   public constructor(stores: StoresGroup) {
     this.stores = stores;
-    this.initUserId();
     this.initAnonymousId();
+    this.initUserId();
     this.initTraits();
+    this.initExternalId();
   }
 
-  public identify(userId?: string, traits: Traits = {}) {
+  public identify(userId?: string, traits: Traits = {}, externalId?: ExternalId) {
+    this.clearUserData()
+
+    this.initAnonymousId();
     if (userId) {
       this.setUserId(userId);
     }
 
-    const newTraits = {
-      ...this.getTraits(),
-      ...traits,
-    };
+    if (externalId) {
+      this.setExternalId(externalId);
+    }
 
-    this.setTraits(newTraits);
+    this.setTraits(traits);
   }
 
   public getUserId(): string | null {
@@ -64,6 +71,21 @@ class UserImpl implements User {
 
   public getTraits(): Traits | null {
     return this.traits;
+  }
+
+  public getExternalId(): ExternalId | null{
+    return this.externalId;
+  }
+
+  private clearUserData() {
+    this.anonymousId = null;
+    this.userId = null;
+    this.externalId = null;
+    this.traits = null;
+    this.stores.remove(ANONYMOUS_ID_PERSISTENCE_KEY)
+    this.stores.remove(USER_ID_PERSISTENCE_KEY)
+    this.stores.remove(EXTERNAL_ID_PERSISTENCE_KEY)
+    this.stores.remove(USER_TRAITS_PERSISTENCE_KEY)
   }
 
   private initUserId() {
@@ -80,6 +102,13 @@ class UserImpl implements User {
     }
 
     this.stores.set(ANONYMOUS_ID_PERSISTENCE_KEY, this.anonymousId);
+  }
+
+  private initExternalId() {
+    this.externalId = this.stores.get(EXTERNAL_ID_PERSISTENCE_KEY);
+    if (this.externalId) {
+      this.stores.set(EXTERNAL_ID_PERSISTENCE_KEY, this.externalId);
+    }
   }
 
   private initTraits() {
@@ -99,5 +128,10 @@ class UserImpl implements User {
   private setUserId(userId: string) {
     this.userId = userId;
     this.stores.set(USER_ID_PERSISTENCE_KEY, userId);
+  }
+
+  private setExternalId(externalId: ExternalId){
+    this.externalId = externalId;
+    this.stores.set(EXTERNAL_ID_PERSISTENCE_KEY, externalId);
   }
 }

@@ -25,22 +25,23 @@ export class Loader {
   private plugins: JPlugin[];
   private sessionIntervalId: NodeJS.Timer = null;
   private stores: StoresGroup = null;
+  private settings: AnalyticsSettings;
 
   public load(settings: AnalyticsSettings): Analytics {
+    this.settings = settings;
+    this.startNewSession();
+
     if (!this.analytics) {
-      this.initAnalytics(settings);
+      this.initAnalytics();
     } else {
-      this.startSession(settings.sessionDurationMin);
       this.plugins?.forEach((plugin) => plugin.updateSettings(settings));
     }
 
     return this.analytics;
   }
 
-  private initAnalytics(settings: AnalyticsSettings) {
-    this.startSession(settings.sessionDurationMin);
-
-    this.plugins = [new JournifyioPlugin(settings)];
+  private initAnalytics() {
+    this.plugins = [new JournifyioPlugin(this.settings)];
     const pQueue = new OperationsPriorityQueueImpl<Context>(
       DEFAULT_MAX_QUEUE_ATTEMPTS
     );
@@ -52,7 +53,7 @@ export class Loader {
       eventQueue: new EventQueueImpl(this.plugins, pQueue),
     };
 
-    this.analytics = new Analytics(settings, deps);
+    this.analytics = new Analytics(this.settings, deps);
   }
 
   private initStores() {
@@ -68,7 +69,7 @@ export class Loader {
     this.stores = new StoresGroup(localStore, cookiesStore, memoryStore);
   }
 
-  private startSession(sessionDurationMin = DEFAULT_SESSION_DURATION_MIN) {
+  public startNewSession() {
     this.initStores();
 
     if (this.sessionIntervalId) {
@@ -79,6 +80,7 @@ export class Loader {
     if (!this.stores.get(SESSION_ID_PERSISTENCE_KEY)) {
       this.stores.set(SESSION_ID_PERSISTENCE_KEY, currentEpoch);
 
+      const sessionDurationMin = this.settings.sessionDurationMin || DEFAULT_SESSION_DURATION_MIN;
       this.sessionIntervalId = setInterval(() => {
         const newSessionId = new Date().getTime();
         this.stores.set(SESSION_ID_PERSISTENCE_KEY, newSessionId);

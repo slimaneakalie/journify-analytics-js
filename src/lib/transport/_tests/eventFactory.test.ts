@@ -2,7 +2,7 @@ import { EventFactoryImpl } from "../eventFactory";
 import { UserMock } from "../../../test/mocks/user";
 import { User } from "../../domain/user";
 import { Traits } from "../../domain/traits";
-import { JournifyEvent } from "../../domain/event";
+import { ExternalId, JournifyEvent } from "../../domain/event";
 import { LIB_VERSION } from "../../generated/libVersion";
 import { StoresGroup } from "../../store/store";
 import { createStoresForTest } from "../../../test/helpers/stores";
@@ -59,10 +59,17 @@ describe("EventFactoryImpl class", () => {
         email: "example@mail.com",
         location: "Morocco",
       };
+      const initialExternalId: ExternalId = {
+        id: "joe-doe",
+        type: "username",
+        collection: "accounts",
+      };
+
       const user: User = new UserMock(
         initialUserId,
         initialAnonymousId,
         initialTraits,
+        initialExternalId,
         {}
       );
 
@@ -79,8 +86,10 @@ describe("EventFactoryImpl class", () => {
       const expectedEvent: JournifyEvent = {
         type: "identify" as const,
         userId: initialUserId,
+        groupId: null,
         anonymousId: initialAnonymousId,
         traits: initialTraits,
+        externalId: initialExternalId,
         context: {
           userAgent,
           locale,

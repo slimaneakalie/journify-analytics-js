@@ -3,7 +3,7 @@ import { EmitterImpl } from "../transport/emitter";
 import { Traits } from "../domain/traits";
 import { User, UserFactory } from "../domain/user";
 import { EventFactory } from "../transport/eventFactory";
-import { JournifyEvent } from "../domain/event";
+import { ExternalId, JournifyEvent } from "../domain/event";
 import { EventQueue } from "../transport/queue";
 import { Group, GroupFactory } from "../domain/group";
 
@@ -43,8 +43,8 @@ export class Analytics extends EmitterImpl {
     this.eventFactory.setGroup(this._group);
   }
 
-  public async identify(userId: string, traits?: Traits): Promise<Context> {
-    this.user.identify(userId, traits);
+  public async identify(userId: string, traits?: Traits, externalId?: ExternalId): Promise<Context> {
+    this.user.identify(userId, traits, externalId);
     const event = this.eventFactory.newIdentifyEvent();
     const ctx = await this.dispatchEvent(event);
     const ctxEvent = ctx.getEvent();

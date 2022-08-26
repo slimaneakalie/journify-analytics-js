@@ -79,7 +79,7 @@ describe("User interface", () => {
       assertValueOnStores(testStores, "journifyio_user_traits", newTraits);
     });
 
-    it("Should merge the traits with the previous ones from the stores", () => {
+    it("Should replace the previous traits by the new ones on the stores", () => {
       const testStores = createStoresForTest();
       const stores = new StoresGroup(
         testStores.local,
@@ -100,7 +100,6 @@ describe("User interface", () => {
       user.identify(null, newTraits);
 
       const expectedStoredTraits = {
-        email: "user-10@gmail.com",
         clicks: 337,
         location: "Morocco",
       };

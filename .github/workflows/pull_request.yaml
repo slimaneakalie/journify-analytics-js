@@ -21,6 +21,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+      - name: Install modules
+        run: yarn install
 
       - name: Configure git
         run: |

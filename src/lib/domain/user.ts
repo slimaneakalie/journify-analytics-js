@@ -46,12 +46,16 @@ class UserImpl implements User {
     this.initExternalId();
   }
 
-  public identify(userId?: string, traits: Traits = {}, externalId?: ExternalId) {
-    this.clearUserData()
-
-    this.initAnonymousId();
-    if (userId) {
+  public identify(
+    userId?: string,
+    traits: Traits = {},
+    externalId?: ExternalId
+  ) {
+    if (userId && userId != this.userId) {
+      this.clearUserData();
       this.setUserId(userId);
+    } else {
+      this.initAnonymousId();
     }
 
     if (externalId) {
@@ -73,7 +77,7 @@ class UserImpl implements User {
     return this.traits;
   }
 
-  public getExternalId(): ExternalId | null{
+  public getExternalId(): ExternalId | null {
     return this.externalId;
   }
 
@@ -82,10 +86,10 @@ class UserImpl implements User {
     this.userId = null;
     this.externalId = null;
     this.traits = null;
-    this.stores.remove(ANONYMOUS_ID_PERSISTENCE_KEY)
-    this.stores.remove(USER_ID_PERSISTENCE_KEY)
-    this.stores.remove(EXTERNAL_ID_PERSISTENCE_KEY)
-    this.stores.remove(USER_TRAITS_PERSISTENCE_KEY)
+    this.stores.remove(ANONYMOUS_ID_PERSISTENCE_KEY);
+    this.stores.remove(USER_ID_PERSISTENCE_KEY);
+    this.stores.remove(EXTERNAL_ID_PERSISTENCE_KEY);
+    this.stores.remove(USER_TRAITS_PERSISTENCE_KEY);
   }
 
   private initUserId() {
@@ -121,7 +125,11 @@ class UserImpl implements User {
   }
 
   private setTraits(newTraits: Traits) {
-    this.traits = newTraits;
+    this.traits = {
+      ...this.traits,
+      ...newTraits,
+    };
+
     this.stores.set(USER_TRAITS_PERSISTENCE_KEY, newTraits);
   }
 
@@ -130,7 +138,7 @@ class UserImpl implements User {
     this.stores.set(USER_ID_PERSISTENCE_KEY, userId);
   }
 
-  private setExternalId(externalId: ExternalId){
+  private setExternalId(externalId: ExternalId) {
     this.externalId = externalId;
     this.stores.set(EXTERNAL_ID_PERSISTENCE_KEY, externalId);
   }

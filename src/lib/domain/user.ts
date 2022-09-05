@@ -54,15 +54,14 @@ class UserImpl implements User {
     if (userId && userId != this.userId) {
       this.clearUserData();
       this.setUserId(userId);
-    } else {
-      this.initAnonymousId();
     }
+
+    this.initAnonymousId();
+    this.setTraits(traits);
 
     if (externalId) {
       this.setExternalId(externalId);
     }
-
-    this.setTraits(traits);
   }
 
   public getUserId(): string | null {

@@ -43,7 +43,11 @@ export class Analytics extends EmitterImpl {
     this.eventFactory.setGroup(this._group);
   }
 
-  public async identify(userId: string, traits?: Traits, externalId?: ExternalId): Promise<Context> {
+  public async identify(
+    userId: string,
+    traits?: Traits,
+    externalId?: ExternalId
+  ): Promise<Context> {
     this.user.identify(userId, traits, externalId);
     const event = this.eventFactory.newIdentifyEvent();
     const ctx = await this.dispatchEvent(event);
@@ -96,7 +100,7 @@ export class Analytics extends EmitterImpl {
     const event = this.eventFactory.newGroupEvent();
     const ctx = await this.dispatchEvent(event);
     const ctxEvent = ctx.getEvent();
-    this.emit(GROUP_EVENT_NAME, ctxEvent.groupId, ctxEvent.traits);
+    this.emit(GROUP_EVENT_NAME, ctxEvent.context.groupId, ctxEvent.traits);
     return ctx;
   }
 

@@ -46,7 +46,6 @@ export class EventFactoryImpl implements EventFactory {
     const baseEvent: JournifyEvent = {
       type: "identify" as const,
       userId: this.user?.getUserId() || null,
-      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.user?.getTraits(),
       externalId: this.user?.getExternalId(),
@@ -64,7 +63,6 @@ export class EventFactoryImpl implements EventFactory {
       event: eventName,
       properties,
       userId: this.user?.getUserId() || null,
-      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.user?.getTraits() || this.group?.getTraits(),
       externalId: this.user?.getExternalId(),
@@ -82,7 +80,6 @@ export class EventFactoryImpl implements EventFactory {
       name: pageName,
       properties,
       userId: this.user?.getUserId() || null,
-      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.user?.getTraits() || this.group?.getTraits(),
       externalId: this.user?.getExternalId(),
@@ -95,7 +92,6 @@ export class EventFactoryImpl implements EventFactory {
     const baseEvent: JournifyEvent = {
       type: "group" as const,
       userId: this.user?.getUserId() || null,
-      groupId: this.group?.getGroupId() || null,
       anonymousId: this.user?.getAnonymousId(),
       traits: this.group?.getTraits(),
       externalId: this.user?.getExternalId(),
@@ -107,6 +103,7 @@ export class EventFactoryImpl implements EventFactory {
   private normalizeEvent(baseEvent: JournifyEvent): JournifyEvent {
     const ctx = baseEvent?.context || {};
     ctx.userAgent = navigator?.userAgent;
+    ctx.groupId = this.group?.getGroupId() || null;
 
     ctx.page = {
       referrer: document.referrer,

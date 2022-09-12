@@ -5,7 +5,6 @@ export interface JournifyEvent {
   type: "track" | "page" | "identify" | "group" | "screen";
   externalId?: ExternalId;
   userId?: string;
-  groupId?: string;
   anonymousId?: string;
   event?: string;
   name?: string;
@@ -42,6 +41,7 @@ interface EventContext {
   locale?: string;
   page?: Page;
   campaign?: UtmCampaign;
+  groupId?: string;
   [key: string]: unknown;
 }
 

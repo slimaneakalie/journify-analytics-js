@@ -86,13 +86,13 @@ describe("EventFactoryImpl class", () => {
       const expectedEvent: JournifyEvent = {
         type: "identify" as const,
         userId: initialUserId,
-        groupId: null,
         anonymousId: initialAnonymousId,
         traits: initialTraits,
         externalId: initialExternalId,
         context: {
           userAgent,
           locale,
+          groupId: null,
           library: {
             name: "@journifyio/analytics.js",
             version: LIB_VERSION,
